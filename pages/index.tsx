@@ -352,6 +352,29 @@ const Home = () => {
     [setPersistedData],
   );
 
+  const onDeleteHandler = useCallback(
+    (currentType: ItemType, id: string, note: string) => {
+      if (!confirm(`Are you sure to delete "${note}"?`)) return;
+
+      setPersistedData((p) => {
+        const updatedItem = p[currentType].find((x) => x.id === id);
+
+        if (!updatedItem) return p;
+
+        const updatedItemInd = p[currentType].indexOf(updatedItem);
+
+        return {
+          ...p,
+          [currentType]: [
+            ...p[currentType].slice(0, updatedItemInd),
+            ...p[currentType].slice(updatedItemInd + 1),
+          ],
+        };
+      });
+    },
+    [setPersistedData],
+  );
+
   useEffect(() => {
     setData(persistedData);
   }, [persistedData]);
@@ -423,7 +446,7 @@ const Home = () => {
                         setAddingType("expense");
                       }}
                       onPressDelete={() => {
-                        // TBC
+                        onDeleteHandler("expense", ex.id, ex.note);
                       }}
                     />
                   ),
@@ -494,7 +517,7 @@ const Home = () => {
                         setAddingType("income");
                       }}
                       onPressDelete={() => {
-                        // TBC
+                        onDeleteHandler("expense", inc.id, inc.note);
                       }}
                     />
                   ),
