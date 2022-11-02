@@ -1,4 +1,10 @@
-import { DetailedHTMLProps, FC, HTMLAttributes, useState } from "react";
+import {
+  DetailedHTMLProps,
+  Dispatch,
+  FC,
+  HTMLAttributes,
+  SetStateAction,
+} from "react";
 import { FiX } from "react-icons/fi";
 import { twMerge } from "tailwind-merge";
 import { ItemType, ItemTypeWithHidden } from "../../pages";
@@ -9,18 +15,32 @@ const upperFirst = (x?: string) => x && `${x[0].toUpperCase()}${x.slice(1)}`;
 interface AddingWindowProps
   extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   addingType: ItemTypeWithHidden;
-  onSave: (type: ItemType, amount: number, note: string) => void;
+  amountHook: [
+    number | undefined,
+    Dispatch<SetStateAction<number | undefined>>,
+  ];
+  noteHook: [string, Dispatch<SetStateAction<string>>];
+  onSave: (
+    type: ItemType,
+    amount: number,
+    note: string,
+    editingId?: string,
+  ) => void;
   onClose: () => void;
+  editingId?: string;
 }
 
 const AddingWindow: FC<AddingWindowProps> = ({
   addingType,
+  amountHook,
+  noteHook,
   onSave,
   onClose,
   className,
+  editingId,
 }) => {
-  const [amount, setAmount] = useState<number>();
-  const [note, setNote] = useState<string>("");
+  const [amount, setAmount] = amountHook;
+  const [note, setNote] = noteHook;
 
   return (
     <div
@@ -36,7 +56,7 @@ const AddingWindow: FC<AddingWindowProps> = ({
         if (e.code === "Enter") {
           if (!amount || addingType === "hidden") return;
 
-          onSave(addingType as ItemType, amount, note);
+          onSave(addingType as ItemType, amount, note, editingId);
 
           onClose();
           setAmount(undefined);
@@ -105,7 +125,7 @@ const AddingWindow: FC<AddingWindowProps> = ({
         onClick={() => {
           if (!amount || addingType === "hidden") return;
 
-          onSave(addingType as ItemType, amount, note);
+          onSave(addingType as ItemType, amount, note, editingId);
 
           onClose();
           setAmount(undefined);

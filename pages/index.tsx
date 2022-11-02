@@ -21,7 +21,7 @@ export type ItemTypeWithHidden = ItemType | "hidden";
 type RecordItem = {
   id: string;
   amount: number;
-  note: number;
+  note: string;
   isPinned: boolean;
 };
 
@@ -232,15 +232,50 @@ const Home = () => {
   const [addingType, setAddingType] = useState<ItemTypeWithHidden>("hidden");
   const [menuVisibleId, setMenuVisibleId] = useState<string>();
 
+  const amountHook = useState<number>();
+  const noteHook = useState<string>("");
+  const [editId, setEditId] = useState<string>();
+
+  const [, setAmount] = amountHook;
+  const [, setNote] = noteHook;
+
   const dataUpdater = useCallback(
-    (currentType: ItemType, amount: number, note: string) => {
+    (
+      currentType: ItemType,
+      amount: number,
+      note: string,
+      editingId?: string,
+    ) => {
       setPersistedData((p) => {
+        let updatedItem = { id: uuidv4(), amount, note, isPinned: false };
+
+        // this is a bit hacky as it edits the item mutably in edit mode
+        if (editingId) {
+          const tmp = p[currentType].find((x) => x.id === editingId);
+
+          if (!tmp) return p;
+
+          updatedItem = tmp;
+
+          updatedItem.id = editingId;
+          updatedItem.amount = amount;
+          updatedItem.note = note;
+
+          const diff = getSum(p.income) - getSum(p.expense);
+
+          // reset editId here
+          setEditId(undefined);
+
+          return {
+            ...p,
+            diff,
+          };
+        }
+
+        // as for create mode, the item is created immutably
         const updated = {
           ...p,
-          [currentType]: [
-            ...p[currentType],
-            { id: uuidv4(), amount, note, isPinned: false },
-          ],
+          [currentType]: [...p[currentType], updatedItem],
         };
         const diff = getSum(updated.income) - getSum(updated.expense);
 
@@ -348,7 +383,10 @@ const Home = () => {
                         onSetPinHandler("expense", ex.id, false);
                       }}
                       onPressEdit={() => {
-                        // TBC
+                        setEditId(ex.id);
+                        setAmount(ex.amount);
+                        setNote(ex.note);
+                        setAddingType("expense");
                       }}
                     />
                   ),
@@ -379,7 +417,10 @@ const Home = () => {
                         onSetPinHandler("expense", ex.id, true);
                       }}
                       onPressEdit={() => {
-                        // TBC
+                        setEditId(ex.id);
+                        setAmount(ex.amount);
+                        setNote(ex.note);
+                        setAddingType("expense");
                       }}
                       onPressDelete={() => {
                         // TBC
@@ -413,7 +454,10 @@ const Home = () => {
                         onSetPinHandler("income", inc.id, true);
                       }}
                       onPressEdit={() => {
-                        // TBC
+                        setEditId(inc.id);
+                        setAmount(inc.amount);
+                        setNote(inc.note);
+                        setAddingType("income");
                       }}
                     />
                   ),
@@ -444,7 +488,10 @@ const Home = () => {
                         onSetPinHandler("income", inc.id, true);
                       }}
                       onPressEdit={() => {
-                        // TBC
+                        setEditId(inc.id);
+                        setAmount(inc.amount);
+                        setNote(inc.note);
+                        setAddingType("income");
                       }}
                       onPressDelete={() => {
                         // TBC
@@ -470,8 +517,11 @@ const Home = () => {
       <section id="control">
         <AddingWindow
           addingType={addingType}
+          amountHook={amountHook}
+          noteHook={noteHook}
           onSave={dataUpdater}
           onClose={() => setAddingType("hidden")}
+          editingId={editId}
         />
 
         <AddButton onClick={(x) => setAddingType(x)} />
