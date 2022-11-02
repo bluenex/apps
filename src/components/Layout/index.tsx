@@ -14,7 +14,11 @@ const Layout: FC<LayoutProps> = ({ children, className }) => {
         className,
       )}
     >
-      <div className="container">{children}</div>
+      <header className="flex h-14 items-center bg-neutral-600 bg-opacity-60 px-4">
+        <h1 className="text-xl font-bold">Simple Budget</h1>
+      </header>
+
+      <div className="container px-4 py-6">{children}</div>
     </div>
   );
 };
