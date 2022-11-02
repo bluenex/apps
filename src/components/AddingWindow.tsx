@@ -45,7 +45,7 @@ const AddingWindow: FC<AddingWindowProps> = ({
   return (
     <div
       className={twMerge(
-        "fixed top-1/4",
+        "fixed top-[10%]",
         "shadow-common fixed left-[5%] w-[calc(100%-10%)] rounded-2xl bg-neutral-500 p-5",
         "sm:left-[25%] sm:max-w-[50%] xl:left-[37.5%] xl:max-w-[25%]",
         "pointer-events-none translate-x-[100vw] transition-all duration-300",
@@ -53,7 +53,7 @@ const AddingWindow: FC<AddingWindowProps> = ({
         className,
       )}
       onKeyDown={(e) => {
-        if (e.code === "Enter") {
+        if (e.code === "Enter" || e.keyCode === 13) {
           if (!amount || addingType === "hidden") return;
 
           onSave(addingType as ItemType, amount, note, editingId);
