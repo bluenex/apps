@@ -1,3 +1,0 @@
-# Components
-
-Components go here.
