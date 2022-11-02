@@ -32,6 +32,17 @@ const AddingWindow: FC<AddingWindowProps> = ({
         addingType !== "hidden" && "pointer-events-auto translate-x-0",
         className,
       )}
+      onKeyDown={(e) => {
+        if (e.code === "Enter") {
+          if (!amount || addingType === "hidden") return;
+
+          onSave(addingType as ItemType, amount, note);
+
+          onClose();
+          setAmount(undefined);
+          setNote("");
+        }
+      }}
     >
       <header className="mb-6 flex items-center justify-between">
         <h2 className="text-2xl font-bold">
