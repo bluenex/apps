@@ -1,4 +1,4 @@
-import { DetailedHTMLProps, FC, HTMLAttributes } from "react";
+import { DetailedHTMLProps, FC, HTMLAttributes, useState } from "react";
 import { FiX } from "react-icons/fi";
 import { twMerge } from "tailwind-merge";
 import { AddingWindowType } from "../../pages";
@@ -19,6 +19,9 @@ const AddingWindow: FC<AddingWindowProps> = ({
   onClose,
   className,
 }) => {
+  const [amount, setAmount] = useState<number>();
+  const [note, setNote] = useState<string>("");
+
   return (
     <div
       className={twMerge(
@@ -42,7 +45,13 @@ const AddingWindow: FC<AddingWindowProps> = ({
           </span>
         </h2>
 
-        <Button onClick={onClose}>
+        <Button
+          onClick={() => {
+            onClose();
+            setAmount(undefined);
+            setNote("");
+          }}
+        >
           <FiX className="text-2xl" />
         </Button>
       </header>
@@ -60,6 +69,8 @@ const AddingWindow: FC<AddingWindowProps> = ({
           type="number"
           name="amount"
           id="amount"
+          value={amount || ""}
+          onChange={(e) => setAmount(Number(e.target.value))}
         />
       </div>
 
@@ -72,10 +83,21 @@ const AddingWindow: FC<AddingWindowProps> = ({
           type="text"
           name="note"
           id="note"
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
         />
       </div>
 
-      <Button className="shadow-common w-full rounded-2xl bg-sky-700 py-4 px-8 text-lg">
+      <Button
+        className="shadow-common w-full rounded-2xl bg-sky-700 py-4 px-8 text-lg"
+        onClick={() => {
+          if (!amount && !note) return;
+
+          onSave();
+          setAmount(undefined);
+          setNote("");
+        }}
+      >
         Save
       </Button>
     </div>
