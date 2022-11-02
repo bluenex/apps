@@ -1,20 +1,20 @@
 import { DetailedHTMLProps, FC, HTMLAttributes, useState } from "react";
 import { FiX } from "react-icons/fi";
 import { twMerge } from "tailwind-merge";
-import { AddingWindowType } from "../../pages";
+import { ItemType, ItemTypeWithHidden } from "../../pages";
 import Button from "./Button";
 
 const upperFirst = (x?: string) => x && `${x[0].toUpperCase()}${x.slice(1)}`;
 
 interface AddingWindowProps
   extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-  type: AddingWindowType;
-  onSave: () => void;
+  addingType: ItemTypeWithHidden;
+  onSave: (type: ItemType, amount: number, note: string) => void;
   onClose: () => void;
 }
 
 const AddingWindow: FC<AddingWindowProps> = ({
-  type,
+  addingType,
   onSave,
   onClose,
   className,
@@ -29,7 +29,7 @@ const AddingWindow: FC<AddingWindowProps> = ({
         "shadow-common fixed left-[5%] w-[calc(100%-10%)] rounded-2xl bg-neutral-500 p-5",
         "sm:left-[25%] sm:max-w-[50%] xl:left-[37.5%] xl:max-w-[25%]",
         "pointer-events-none translate-x-[100vw] transition-all duration-300",
-        type !== "hidden" && "pointer-events-auto translate-x-0",
+        addingType !== "hidden" && "pointer-events-auto translate-x-0",
         className,
       )}
     >
@@ -38,11 +38,11 @@ const AddingWindow: FC<AddingWindowProps> = ({
           {"Adding "}
           <span
             className={twMerge(
-              type === "income" && "text-green-400",
-              type === "expense" && "text-red-300",
+              addingType === "income" && "text-green-400",
+              addingType === "expense" && "text-red-300",
             )}
           >
-            {upperFirst(type)}
+            {upperFirst(addingType)}
           </span>
         </h2>
 
@@ -64,8 +64,8 @@ const AddingWindow: FC<AddingWindowProps> = ({
         <input
           className={twMerge(
             "border-b-2 border-b-neutral-100 bg-transparent text-lg font-bold tracking-widest",
-            type === "income" && "text-green-400",
-            type === "expense" && "text-red-300",
+            addingType === "income" && "text-green-400",
+            addingType === "expense" && "text-red-300",
           )}
           type="number"
           name="amount"
@@ -92,9 +92,11 @@ const AddingWindow: FC<AddingWindowProps> = ({
       <Button
         className="shadow-common w-full rounded-2xl bg-sky-700 py-4 px-8 text-lg"
         onClick={() => {
-          if (!amount && !note) return;
+          if (!amount || addingType === "hidden") return;
 
-          onSave();
+          onSave(addingType as ItemType, amount, note);
+
+          onClose();
           setAmount(undefined);
           setNote("");
         }}

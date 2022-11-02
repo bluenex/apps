@@ -10,7 +10,7 @@ const Layout: FC<LayoutProps> = ({ children, className }) => {
   return (
     <div
       className={twMerge(
-        "h-screen w-screen bg-neutral-700 text-gray-100",
+        "h-screen w-screen overflow-x-hidden bg-neutral-700 text-gray-100",
         className,
       )}
     >
