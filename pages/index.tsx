@@ -396,7 +396,7 @@ const Home = () => {
       <main>
         {data.expense.length === 0 && data.income.length === 0 && "No record!"}
 
-        <section id="render-data">
+        <section id="render-data" className="pb-20">
           {data?.diff !== undefined && (
             <div id="diff" className="mb-6">
               <h2 className="mb-2 text-lg font-bold">Diff</h2>
