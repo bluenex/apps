@@ -1,9 +1,8 @@
 import { FC, useState } from "react";
 import { FiPlus, FiMinus } from "react-icons/fi";
 import { twMerge } from "tailwind-merge";
+import { ItemType } from "../../pages";
 import Button from "./Button";
-
-type ItemType = "income" | "expense";
 
 interface AddButtonProps {
   onClick: (t: ItemType) => void;

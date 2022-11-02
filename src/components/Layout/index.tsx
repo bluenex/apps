@@ -14,11 +14,13 @@ const Layout: FC<LayoutProps> = ({ children, className }) => {
         className,
       )}
     >
-      <header className="flex h-14 items-center bg-neutral-600 bg-opacity-60 px-4">
-        <h1 className="text-xl font-bold">Simple Budget</h1>
+      <header className="flex h-14 items-center bg-neutral-600 bg-opacity-60">
+        <div className="container mx-auto px-4">
+          <h1 className="text-xl font-bold">Simple Budget</h1>
+        </div>
       </header>
 
-      <div className="container px-4 py-6">{children}</div>
+      <div className="container mx-auto px-4 py-6">{children}</div>
     </div>
   );
 };
