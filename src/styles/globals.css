@@ -3,7 +3,13 @@
 @tailwind utilities;
 
 @layer base {
-  html {
+  :root {
     font-family: Bai Jamjuree, system-ui, sans-serif;
+  }
+}
+
+@layer utilities {
+  .shadow-common {
+    @apply shadow-lg shadow-gray-800;
   }
 }
