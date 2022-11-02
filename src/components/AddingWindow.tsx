@@ -26,8 +26,9 @@ const AddingWindow: FC<AddingWindowProps> = ({
     <div
       className={twMerge(
         "fixed top-1/4",
-        "shadow-common fixed w-[calc(100%-30px)] rounded-2xl bg-neutral-500 p-5",
-        "pointer-events-none translate-x-[120%] transition-all duration-300",
+        "shadow-common fixed left-[5%] w-[calc(100%-10%)] rounded-2xl bg-neutral-500 p-5",
+        "sm:left-[25%] sm:max-w-[50%] xl:left-[37.5%] xl:max-w-[25%]",
+        "pointer-events-none translate-x-[100vw] transition-all duration-300",
         type !== "hidden" && "pointer-events-auto translate-x-0",
         className,
       )}
