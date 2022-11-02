@@ -44,7 +44,28 @@ const ItemRenderer: FC<{
   itemType: ItemType;
   onClick: () => void;
   isMenuVisible: boolean;
-}> = ({ itemData, itemType, isMenuVisible, onClick }) => {
+  onMoveUp: () => void;
+  canMoveUp: boolean;
+  onMoveDown: () => void;
+  canMoveDown: boolean;
+  onSetPin: () => void;
+  isPinned: boolean;
+  onPressEdit: () => void;
+  onPressDelete: () => void;
+}> = ({
+  itemData,
+  itemType,
+  isMenuVisible,
+  onClick,
+  onMoveUp,
+  canMoveUp,
+  onMoveDown,
+  canMoveDown,
+  onSetPin,
+  isPinned,
+  onPressEdit,
+  onPressDelete,
+}) => {
   return (
     <>
       <div
@@ -54,19 +75,37 @@ const ItemRenderer: FC<{
           isMenuVisible && "pointer-events-auto h-10 opacity-100",
         )}
       >
-        <Button className="grid flex-1 place-content-center">
+        <Button
+          className="grid flex-1 place-content-center disabled:text-neutral-500"
+          disabled={!canMoveUp}
+          onClick={onMoveUp}
+        >
           <FiArrowUp />
         </Button>
-        <Button className="grid flex-1 place-content-center">
+        <Button
+          className="grid flex-1 place-content-center disabled:text-neutral-500"
+          disabled={!canMoveDown}
+          onClick={onMoveDown}
+        >
           <FiArrowDown />
         </Button>
-        <Button className="grid flex-1 place-content-center">
+        <Button
+          className="grid flex-1 place-content-center disabled:text-neutral-500"
+          disabled={isPinned}
+          onClick={onSetPin}
+        >
           <FiRepeat />
         </Button>
-        <Button className="grid flex-1 place-content-center">
+        <Button
+          className="grid flex-1 place-content-center"
+          onClick={onPressEdit}
+        >
           <FiEdit />
         </Button>
-        <Button className="grid flex-1 place-content-center">
+        <Button
+          className="grid flex-1 place-content-center"
+          onClick={onPressDelete}
+        >
           <FiTrash2 />
         </Button>
       </div>
@@ -170,13 +209,31 @@ const Home = () => {
             <div id="expense" className="mb-6">
               <h2 className="mb-2 text-lg font-bold">Expense</h2>
 
-              {data.expense.map((ex) => (
+              {data.expense.map((ex, ind, arr) => (
                 <ItemRenderer
                   itemType="expense"
                   key={ex.id}
                   itemData={ex}
                   isMenuVisible={menuVisibleId === ex.id}
                   onClick={() => setMenuVisibleId(ex.id)}
+                  canMoveUp={ind !== 0}
+                  onMoveUp={() => {
+                    // TBC
+                  }}
+                  canMoveDown={ind !== arr.length - 1}
+                  onMoveDown={() => {
+                    // TBC
+                  }}
+                  isPinned={ex.isPinned}
+                  onSetPin={() => {
+                    // TBC
+                  }}
+                  onPressEdit={() => {
+                    // TBC
+                  }}
+                  onPressDelete={() => {
+                    // TBC
+                  }}
                 />
               ))}
 
@@ -188,7 +245,7 @@ const Home = () => {
             <div id="income" className="mb-6">
               <h2 className="mb-2 text-lg font-bold">Income</h2>
 
-              {data.income.map((inc) => (
+              {data.income.map((inc, ind, arr) => (
                 <ItemRenderer
                   itemType="income"
                   key={inc.id}
@@ -197,6 +254,24 @@ const Home = () => {
                   onClick={() =>
                     setMenuVisibleId((p) => (inc.id !== p ? inc.id : undefined))
                   }
+                  canMoveUp={ind !== 0}
+                  onMoveUp={() => {
+                    // TBC
+                  }}
+                  canMoveDown={ind !== arr.length - 1}
+                  onMoveDown={() => {
+                    // TBC
+                  }}
+                  isPinned={inc.isPinned}
+                  onSetPin={() => {
+                    // TBC
+                  }}
+                  onPressEdit={() => {
+                    // TBC
+                  }}
+                  onPressDelete={() => {
+                    // TBC
+                  }}
                 />
               ))}
 
