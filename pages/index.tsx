@@ -3,7 +3,8 @@ import {
   FiArrowDown,
   FiArrowUp,
   FiEdit,
-  FiRepeat,
+  FiChevronsUp,
+  FiChevronsDown,
   FiTrash2,
 } from "react-icons/fi";
 import { twMerge } from "tailwind-merge";
@@ -49,7 +50,6 @@ const ItemRenderer: FC<{
   onMoveDown: () => void;
   canMoveDown: boolean;
   onSetPin: () => void;
-  isPinned: boolean;
   onPressEdit: () => void;
   onPressDelete: () => void;
 }> = ({
@@ -62,7 +62,6 @@ const ItemRenderer: FC<{
   onMoveDown,
   canMoveDown,
   onSetPin,
-  isPinned,
   onPressEdit,
   onPressDelete,
 }) => {
@@ -91,10 +90,9 @@ const ItemRenderer: FC<{
         </Button>
         <Button
           className="grid flex-1 place-content-center disabled:text-neutral-500"
-          disabled={isPinned}
           onClick={onSetPin}
         >
-          <FiRepeat />
+          <FiChevronsUp />
         </Button>
         <Button
           className="grid flex-1 place-content-center"
@@ -118,6 +116,66 @@ const ItemRenderer: FC<{
         onClick={() => onClick()}
       >
         <p>{itemData.note}</p>
+        <p
+          className={twMerge(
+            itemType === "expense" && "text-red-300",
+            itemType === "income" && "text-green-400",
+          )}
+        >{`${itemType === "expense" ? "-" : "+"}${itemData.amount}`}</p>
+      </div>
+    </>
+  );
+};
+
+const PinnedItemRenderer: FC<{
+  itemData: RecordItem;
+  itemType: ItemType;
+  onClick: () => void;
+  isMenuVisible: boolean;
+  onSetPin: () => void;
+  onPressEdit: () => void;
+}> = ({
+  itemData,
+  itemType,
+  isMenuVisible,
+  onClick,
+  onSetPin,
+  onPressEdit,
+}) => {
+  return (
+    <>
+      <div
+        className={twMerge(
+          "pointer-events-none h-0 w-full rounded-t bg-black bg-opacity-25 opacity-0 transition-all duration-300",
+          "flex justify-evenly text-lg",
+          isMenuVisible && "pointer-events-auto h-10 opacity-100",
+        )}
+      >
+        <Button
+          className="grid flex-1 place-content-center disabled:text-neutral-500"
+          onClick={onSetPin}
+        >
+          <FiChevronsDown />
+        </Button>
+        <Button
+          className="grid flex-1 place-content-center"
+          onClick={onPressEdit}
+        >
+          <FiEdit />
+        </Button>
+      </div>
+
+      <div
+        className={twMerge(
+          "mb-0.5 flex w-full justify-between p-0.5 px-2 font-semibold active:bg-black active:bg-opacity-10",
+          isMenuVisible && "bg-black bg-opacity-25",
+        )}
+        onClick={() => onClick()}
+      >
+        <p className="flex items-center gap-1">
+          <FiChevronsUp />
+          {itemData.note}
+        </p>
         <p
           className={twMerge(
             itemType === "expense" && "text-red-300",
@@ -195,6 +253,70 @@ const Home = () => {
     [setPersistedData],
   );
 
+  const onMoveUpHandler = useCallback(
+    (currentType: ItemType, id: string) => {
+      setPersistedData((p) => {
+        const updatedItem = p[currentType].find((x) => x.id === id);
+
+        if (!updatedItem) return p;
+
+        const updatedItemInd = p[currentType].indexOf(updatedItem);
+        const swapItem = p[currentType][updatedItemInd - 1];
+
+        return {
+          ...p,
+          [currentType]: [
+            ...p[currentType].slice(0, updatedItemInd - 1),
+            updatedItem,
+            swapItem,
+            ...p[currentType].slice(updatedItemInd + 1),
+          ],
+        };
+      });
+    },
+    [setPersistedData],
+  );
+
+  const onMoveDownHandler = useCallback(
+    (currentType: ItemType, id: string) => {
+      setPersistedData((p) => {
+        const updatedItem = p[currentType].find((x) => x.id === id);
+
+        if (!updatedItem) return p;
+
+        const updatedItemInd = p[currentType].indexOf(updatedItem);
+        const swapItem = p[currentType][updatedItemInd + 1];
+
+        return {
+          ...p,
+          [currentType]: [
+            ...p[currentType].slice(0, updatedItemInd),
+            swapItem,
+            updatedItem,
+            ...p[currentType].slice(updatedItemInd + 2),
+          ],
+        };
+      });
+    },
+    [setPersistedData],
+  );
+
+  const onSetPinHandler = useCallback(
+    (currentType: ItemType, id: string, status: boolean) => {
+      setPersistedData((p) => {
+        const updatedItem = p[currentType].find((x) => x.id === id);
+
+        if (!updatedItem) return p;
+
+        updatedItem.isPinned = status;
+
+        return p;
+      });
+      setMenuVisibleId(undefined);
+    },
+    [setPersistedData],
+  );
+
   useEffect(() => {
     setData(persistedData);
   }, [persistedData]);
@@ -209,33 +331,62 @@ const Home = () => {
             <div id="expense" className="mb-6">
               <h2 className="mb-2 text-lg font-bold">Expense</h2>
 
-              {data.expense.map((ex, ind, arr) => (
-                <ItemRenderer
-                  itemType="expense"
-                  key={ex.id}
-                  itemData={ex}
-                  isMenuVisible={menuVisibleId === ex.id}
-                  onClick={() => setMenuVisibleId(ex.id)}
-                  canMoveUp={ind !== 0}
-                  onMoveUp={() => {
-                    // TBC
-                  }}
-                  canMoveDown={ind !== arr.length - 1}
-                  onMoveDown={() => {
-                    // TBC
-                  }}
-                  isPinned={ex.isPinned}
-                  onSetPin={() => {
-                    // TBC
-                  }}
-                  onPressEdit={() => {
-                    // TBC
-                  }}
-                  onPressDelete={() => {
-                    // TBC
-                  }}
-                />
-              ))}
+              {data.expense.map(
+                (ex) =>
+                  ex.isPinned && (
+                    <PinnedItemRenderer
+                      itemType="expense"
+                      key={ex.id}
+                      itemData={ex}
+                      isMenuVisible={menuVisibleId === ex.id}
+                      onClick={() =>
+                        setMenuVisibleId((p) =>
+                          ex.id !== p ? ex.id : undefined,
+                        )
+                      }
+                      onSetPin={() => {
+                        onSetPinHandler("expense", ex.id, false);
+                      }}
+                      onPressEdit={() => {
+                        // TBC
+                      }}
+                    />
+                  ),
+              )}
+
+              {data.expense.map(
+                (ex, ind, arr) =>
+                  !ex.isPinned && (
+                    <ItemRenderer
+                      itemType="expense"
+                      key={ex.id}
+                      itemData={ex}
+                      isMenuVisible={menuVisibleId === ex.id}
+                      onClick={() =>
+                        setMenuVisibleId((p) =>
+                          ex.id !== p ? ex.id : undefined,
+                        )
+                      }
+                      canMoveUp={ind !== 0}
+                      onMoveUp={() => {
+                        onMoveUpHandler("expense", ex.id);
+                      }}
+                      canMoveDown={ind !== arr.length - 1}
+                      onMoveDown={() => {
+                        onMoveDownHandler("expense", ex.id);
+                      }}
+                      onSetPin={() => {
+                        onSetPinHandler("expense", ex.id, true);
+                      }}
+                      onPressEdit={() => {
+                        // TBC
+                      }}
+                      onPressDelete={() => {
+                        // TBC
+                      }}
+                    />
+                  ),
+              )}
 
               <TotalRenderer itemType="expense" amount={getSum(data.expense)} />
             </div>
@@ -245,35 +396,62 @@ const Home = () => {
             <div id="income" className="mb-6">
               <h2 className="mb-2 text-lg font-bold">Income</h2>
 
-              {data.income.map((inc, ind, arr) => (
-                <ItemRenderer
-                  itemType="income"
-                  key={inc.id}
-                  itemData={inc}
-                  isMenuVisible={menuVisibleId === inc.id}
-                  onClick={() =>
-                    setMenuVisibleId((p) => (inc.id !== p ? inc.id : undefined))
-                  }
-                  canMoveUp={ind !== 0}
-                  onMoveUp={() => {
-                    // TBC
-                  }}
-                  canMoveDown={ind !== arr.length - 1}
-                  onMoveDown={() => {
-                    // TBC
-                  }}
-                  isPinned={inc.isPinned}
-                  onSetPin={() => {
-                    // TBC
-                  }}
-                  onPressEdit={() => {
-                    // TBC
-                  }}
-                  onPressDelete={() => {
-                    // TBC
-                  }}
-                />
-              ))}
+              {data.income.map(
+                (inc) =>
+                  inc.isPinned && (
+                    <PinnedItemRenderer
+                      itemType="income"
+                      key={inc.id}
+                      itemData={inc}
+                      isMenuVisible={menuVisibleId === inc.id}
+                      onClick={() =>
+                        setMenuVisibleId((p) =>
+                          inc.id !== p ? inc.id : undefined,
+                        )
+                      }
+                      onSetPin={() => {
+                        onSetPinHandler("income", inc.id, true);
+                      }}
+                      onPressEdit={() => {
+                        // TBC
+                      }}
+                    />
+                  ),
+              )}
+
+              {data.income.map(
+                (inc, ind, arr) =>
+                  !inc.isPinned && (
+                    <ItemRenderer
+                      itemType="income"
+                      key={inc.id}
+                      itemData={inc}
+                      isMenuVisible={menuVisibleId === inc.id}
+                      onClick={() =>
+                        setMenuVisibleId((p) =>
+                          inc.id !== p ? inc.id : undefined,
+                        )
+                      }
+                      canMoveUp={ind !== 0}
+                      onMoveUp={() => {
+                        onMoveUpHandler("income", inc.id);
+                      }}
+                      canMoveDown={ind !== arr.length - 1}
+                      onMoveDown={() => {
+                        onMoveDownHandler("income", inc.id);
+                      }}
+                      onSetPin={() => {
+                        onSetPinHandler("income", inc.id, true);
+                      }}
+                      onPressEdit={() => {
+                        // TBC
+                      }}
+                      onPressDelete={() => {
+                        // TBC
+                      }}
+                    />
+                  ),
+              )}
 
               <TotalRenderer itemType="income" amount={getSum(data.income)} />
             </div>
