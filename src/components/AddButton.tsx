@@ -41,7 +41,7 @@ const AddButton: FC<AddButtonProps> = ({ onClick }) => {
 
       <div className="ml-auto">
         <Button
-          className="shadow-common rounded-full bg-sky-700 p-5"
+          className="shadow-common rounded-full bg-sky-700 bg-opacity-75 p-5"
           onClick={() => setIsMenuVisible((p) => !p)}
         >
           <FiPlus className="text-2xl" />

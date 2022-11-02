@@ -14,7 +14,7 @@ const Layout: FC<LayoutProps> = ({ children, className }) => {
         className,
       )}
     >
-      <header className="flex h-14 items-center bg-neutral-600 bg-opacity-60">
+      <header className="flex h-14 items-center bg-neutral-600 bg-opacity-60 shadow-md">
         <div className="container mx-auto px-4">
           <h1 className="text-xl font-bold">Simple Budget</h1>
         </div>
