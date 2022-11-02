@@ -1,14 +1,15 @@
 import { FC, useState } from "react";
-import { FiPlus, FiMinus } from "react-icons/fi";
+import { FiPlus, FiMinus, FiTrash2 } from "react-icons/fi";
 import { twMerge } from "tailwind-merge";
 import { ItemType } from "../../pages";
 import Button from "./Button";
 
 interface AddButtonProps {
-  onClick: (t: ItemType) => void;
+  onClickAdd: (t: ItemType) => void;
+  onClickClearAll: () => void;
 }
 
-const AddButton: FC<AddButtonProps> = ({ onClick }) => {
+const AddButton: FC<AddButtonProps> = ({ onClickAdd, onClickClearAll }) => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   return (
@@ -22,7 +23,7 @@ const AddButton: FC<AddButtonProps> = ({ onClick }) => {
         <Button
           className="rounded-2xl bg-green-800 p-6"
           onClick={() => {
-            onClick("income");
+            onClickAdd("income");
             setIsMenuVisible(false);
           }}
         >
@@ -31,7 +32,7 @@ const AddButton: FC<AddButtonProps> = ({ onClick }) => {
         <Button
           className="rounded-2xl bg-red-800 p-6"
           onClick={() => {
-            onClick("expense");
+            onClickAdd("expense");
             setIsMenuVisible(false);
           }}
         >
@@ -40,6 +41,12 @@ const AddButton: FC<AddButtonProps> = ({ onClick }) => {
       </div>
 
       <div className="ml-auto">
+        <Button
+          className="shadow-common mr-3 rounded-full bg-red-500 bg-opacity-75 p-2.5"
+          onClick={onClickClearAll}
+        >
+          <FiTrash2 className="text" />
+        </Button>
         <Button
           className="shadow-common rounded-full bg-sky-700 bg-opacity-75 p-5"
           onClick={() => setIsMenuVisible((p) => !p)}

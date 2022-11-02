@@ -375,6 +375,18 @@ const Home = () => {
     [setPersistedData],
   );
 
+  const onClickClearAll = useCallback(() => {
+    if (!confirm("Are you sure to clear all the data?")) {
+      return;
+    }
+
+    if (!confirm("Are you REALLY REALLTY sure to clear all the data?")) {
+      return;
+    }
+
+    setPersistedData(defaultData);
+  }, [setPersistedData]);
+
   useEffect(() => {
     setData(persistedData);
   }, [persistedData]);
@@ -547,7 +559,10 @@ const Home = () => {
           editingId={editId}
         />
 
-        <AddButton onClick={(x) => setAddingType(x)} />
+        <AddButton
+          onClickAdd={(x) => setAddingType(x)}
+          onClickClearAll={onClickClearAll}
+        />
       </section>
     </Layout>
   );
