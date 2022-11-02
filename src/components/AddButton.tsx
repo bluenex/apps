@@ -17,11 +17,12 @@ const AddButton: FC<AddButtonProps> = ({ onClickAdd, onClickClearAll }) => {
       <div
         className={twMerge(
           "shadow-common pointer-events-none grid translate-x-[200%] gap-1.5 rounded-2xl bg-neutral-500 p-1 transition-all duration-300",
+          "ml-auto w-fit",
           isMenuVisible && "pointer-events-auto translate-x-0",
         )}
       >
         <Button
-          className="rounded-2xl bg-green-800 p-6"
+          className="mx-auto rounded-2xl bg-green-800 p-6"
           onClick={() => {
             onClickAdd("income");
             setIsMenuVisible(false);
@@ -30,7 +31,7 @@ const AddButton: FC<AddButtonProps> = ({ onClickAdd, onClickClearAll }) => {
           <FiPlus className="text-2xl" />
         </Button>
         <Button
-          className="rounded-2xl bg-red-800 p-6"
+          className="mx-auto rounded-2xl bg-red-800 p-6"
           onClick={() => {
             onClickAdd("expense");
             setIsMenuVisible(false);
