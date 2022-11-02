@@ -397,6 +397,14 @@ const Home = () => {
         {data.expense.length === 0 && data.income.length === 0 && "No record!"}
 
         <section id="render-data">
+          {data?.diff !== undefined && (
+            <div id="diff" className="mb-6">
+              <h2 className="mb-2 text-lg font-bold">Diff</h2>
+
+              <DiffRenderer value={data.diff} />
+            </div>
+          )}
+
           {data.expense.length > 0 && (
             <div id="expense" className="mb-6">
               <h2 className="mb-2 text-lg font-bold">Expense</h2>
@@ -536,14 +544,6 @@ const Home = () => {
               )}
 
               <TotalRenderer itemType="income" amount={getSum(data.income)} />
-            </div>
-          )}
-
-          {data?.diff !== undefined && (
-            <div id="diff" className="mb-6">
-              <h2 className="mb-2 text-lg font-bold">Diff</h2>
-
-              <DiffRenderer value={data.diff} />
             </div>
           )}
         </section>
