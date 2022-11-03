@@ -19,7 +19,10 @@ const AddButton: FC<AddButtonProps> = ({ onClickAdd, onClickClearAll }) => {
 
   return (
     <TabOutsideDetector onTabOutside={handleTabOutside}>
-      <div className="fixed bottom-6 right-6 flex flex-col justify-end gap-4">
+      <div
+        id="adding-window-triggerer"
+        className="fixed bottom-6 right-6 flex flex-col justify-end gap-4"
+      >
         <div className="relative">
           <div
             className={twMerge(
@@ -56,7 +59,6 @@ const AddButton: FC<AddButtonProps> = ({ onClickAdd, onClickClearAll }) => {
               <FiTrash2 className="text" />
             </Button>
             <Button
-              id="menu-trigger"
               className="shadow-common rounded-full bg-sky-700 bg-opacity-75 p-5"
               onClick={() => setIsMenuVisible((p) => !p)}
             >
