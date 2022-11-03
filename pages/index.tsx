@@ -376,15 +376,21 @@ const Home = () => {
   );
 
   const onClickClearAll = useCallback(() => {
-    if (!confirm("Are you sure to clear all the data?")) {
+    if (!confirm("Are you sure to clear all unpinned the data?")) {
       return;
     }
 
-    if (!confirm("Are you REALLY REALLTY sure to clear all the data?")) {
+    if (
+      !confirm("Are you REALLY REALLTY sure to clear all the unpinned data?")
+    ) {
       return;
     }
 
-    setPersistedData(defaultData);
+    setPersistedData((p) => ({
+      ...p,
+      expense: p.expense.filter((x) => x.isPinned),
+      income: p.income.filter((x) => x.isPinned),
+    }));
   }, [setPersistedData]);
 
   useEffect(() => {
