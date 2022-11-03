@@ -3,22 +3,22 @@ import { ReactNode, useEffect, useRef } from "react";
 interface TabOutsideDetectorProps {
   children: ReactNode;
   /** the id of the button or other element to trigger this area to popup */
-  triggerId?: string;
+  triggererId?: string;
   /** useCallback function or a function that is declared outside of the component */
   onTabOutside?: () => void;
 }
 
 const TabOutsideDetector = ({
   children,
-  triggerId,
+  triggererId,
   onTabOutside,
 }: TabOutsideDetectorProps) => {
   const areaRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLUnknownElement | null>(null);
 
   useEffect(() => {
-    if (triggerId) {
-      triggerRef.current = document.getElementById(triggerId);
+    if (triggererId) {
+      triggerRef.current = document.getElementById(triggererId);
     }
 
     const handler = (e: MouseEvent) => {
@@ -42,7 +42,7 @@ const TabOutsideDetector = ({
     return () => {
       window.removeEventListener("click", handler);
     };
-  }, [onTabOutside, triggerId]);
+  }, [onTabOutside, triggererId]);
 
   return <div ref={areaRef}>{children}</div>;
 };
