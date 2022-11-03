@@ -136,12 +136,20 @@ const PinnedItemRenderer: FC<{
   itemType: ItemType;
   onClick: () => void;
   isMenuVisible: boolean;
+  onMoveUp: () => void;
+  canMoveUp: boolean;
+  onMoveDown: () => void;
+  canMoveDown: boolean;
   onSetPin: () => void;
   onPressEdit: () => void;
 }> = ({
   itemData,
   itemType,
   isMenuVisible,
+  onMoveUp,
+  canMoveUp,
+  onMoveDown,
+  canMoveDown,
   onClick,
   onSetPin,
   onPressEdit,
@@ -155,6 +163,20 @@ const PinnedItemRenderer: FC<{
           isMenuVisible && "pointer-events-auto h-10 opacity-100",
         )}
       >
+        <Button
+          className="grid flex-1 place-content-center disabled:text-neutral-500"
+          disabled={!canMoveUp}
+          onClick={onMoveUp}
+        >
+          <FiArrowUp />
+        </Button>
+        <Button
+          className="grid flex-1 place-content-center disabled:text-neutral-500"
+          disabled={!canMoveDown}
+          onClick={onMoveDown}
+        >
+          <FiArrowDown />
+        </Button>
         <Button
           className="grid flex-1 place-content-center disabled:text-neutral-500"
           onClick={onSetPin}
@@ -431,7 +453,7 @@ const Home = () => {
               <h2 className="mb-2 text-lg font-bold">Expense</h2>
 
               {data.expense.map(
-                (ex) =>
+                (ex, ind, arr) =>
                   ex.isPinned && (
                     <PinnedItemRenderer
                       itemType="expense"
@@ -443,6 +465,14 @@ const Home = () => {
                           ex.id !== p ? ex.id : undefined,
                         )
                       }
+                      canMoveUp={ind !== 0}
+                      onMoveUp={() => {
+                        onMoveUpHandler("expense", ex.id);
+                      }}
+                      canMoveDown={ind !== arr.length - 1}
+                      onMoveDown={() => {
+                        onMoveDownHandler("expense", ex.id);
+                      }}
                       onSetPin={() => {
                         onSetPinHandler("expense", ex.id, false);
                       }}
@@ -502,7 +532,7 @@ const Home = () => {
               <h2 className="mb-2 text-lg font-bold">Income</h2>
 
               {data.income.map(
-                (inc) =>
+                (inc, ind, arr) =>
                   inc.isPinned && (
                     <PinnedItemRenderer
                       itemType="income"
@@ -514,6 +544,14 @@ const Home = () => {
                           inc.id !== p ? inc.id : undefined,
                         )
                       }
+                      canMoveUp={ind !== 0}
+                      onMoveUp={() => {
+                        onMoveUpHandler("income", inc.id);
+                      }}
+                      canMoveDown={ind !== arr.length - 1}
+                      onMoveDown={() => {
+                        onMoveDownHandler("income", inc.id);
+                      }}
                       onSetPin={() => {
                         onSetPinHandler("income", inc.id, false);
                       }}
