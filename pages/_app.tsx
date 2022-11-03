@@ -12,9 +12,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         <link rel="icon" type="image/png" sizes="32x32" href="/simple-budget/favicon/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/simple-budget/favicon/favicon-16x16.png" />
         <link rel="manifest" href="/simple-budget/favicon/site.webmanifest" />
-        <link rel="mask-icon" href="/simple-budget/favicon/safari-pinned-tab.svg" color="##5bbad5" />
+        <link rel="mask-icon" href="/simple-budget/favicon/safari-pinned-tab.svg" color="#5bbad5" />
         <link rel="shortcut icon" href="/simple-budget/favicon/favicon.ico" />
-        <meta name="msapplication-TileColor" content="##5bbad5" />
+        <meta name="msapplication-TileColor" content="#5bbad5" />
         <meta name="msapplication-config" content="/simple-budget/favicon/browserconfig.xml" />
         <meta name="theme-color" content="#ffffff" />
 
