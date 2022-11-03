@@ -494,7 +494,7 @@ const Home = () => {
                         )
                       }
                       onSetPin={() => {
-                        onSetPinHandler("income", inc.id, true);
+                        onSetPinHandler("income", inc.id, false);
                       }}
                       onPressEdit={() => {
                         setEditId(inc.id);
