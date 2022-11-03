@@ -14,21 +14,19 @@ const TabOutsideDetector = ({
   onTabOutside,
 }: TabOutsideDetectorProps) => {
   const areaRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLUnknownElement | null>(null);
+  const triggerRef = useRef<HTMLUnknownElement[]>([]);
 
   useEffect(() => {
     if (triggererId) {
-      triggerRef.current = document.getElementById(triggererId);
+      triggerRef.current = Array.from(
+        document.querySelectorAll(`#${triggererId}`),
+      );
     }
 
     const handler = (e: MouseEvent) => {
-      // console.log("areaRef.current", areaRef.current);
-      // console.log("triggerRef.current", triggerRef.current);
-      // console.log("e.target", e.target);
-
       const doNothing =
-        triggerRef.current === e.target ||
-        triggerRef.current?.contains(e.target as Node) ||
+        triggerRef.current.includes(e.target as HTMLUnknownElement) ||
+        triggerRef.current.some((x) => x?.contains(e.target as Node)) ||
         areaRef.current === e.target ||
         areaRef.current?.contains(e.target as Node);
 

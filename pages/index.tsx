@@ -95,6 +95,7 @@ const ItemRenderer: FC<{
           <FiChevronsUp />
         </Button>
         <Button
+          id="adding-window-triggerer"
           className="grid flex-1 place-content-center"
           onClick={onPressEdit}
         >
@@ -184,6 +185,7 @@ const PinnedItemRenderer: FC<{
           <FiChevronsDown />
         </Button>
         <Button
+          id="adding-window-triggerer"
           className="grid flex-1 place-content-center"
           onClick={onPressEdit}
         >
