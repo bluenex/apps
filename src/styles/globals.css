@@ -8,10 +8,6 @@
 
     @apply antialiased;
   }
-
-  *:focus {
-    outline: none;
-  }
 }
 
 @layer utilities {

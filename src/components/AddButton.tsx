@@ -22,15 +22,6 @@ const AddButton: FC<AddButtonProps> = ({ onClickAdd, onClickClearAll }) => {
         )}
       >
         <Button
-          className="mx-auto rounded-2xl bg-green-800 p-6"
-          onClick={() => {
-            onClickAdd("income");
-            setIsMenuVisible(false);
-          }}
-        >
-          <FiPlus className="text-2xl" />
-        </Button>
-        <Button
           className="mx-auto rounded-2xl bg-red-800 p-6"
           onClick={() => {
             onClickAdd("expense");
@@ -38,6 +29,15 @@ const AddButton: FC<AddButtonProps> = ({ onClickAdd, onClickClearAll }) => {
           }}
         >
           <FiMinus className="text-2xl" />
+        </Button>
+        <Button
+          className="mx-auto rounded-2xl bg-green-800 p-6"
+          onClick={() => {
+            onClickAdd("income");
+            setIsMenuVisible(false);
+          }}
+        >
+          <FiPlus className="text-2xl" />
         </Button>
       </div>
 

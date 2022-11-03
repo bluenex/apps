@@ -4,6 +4,7 @@ import {
   FC,
   HTMLAttributes,
   SetStateAction,
+  useRef,
 } from "react";
 import { FiX } from "react-icons/fi";
 import { twMerge } from "tailwind-merge";
@@ -42,6 +43,8 @@ const AddingWindow: FC<AddingWindowProps> = ({
   const [amount, setAmount] = amountHook;
   const [note, setNote] = noteHook;
 
+  const amountInputRef = useRef<HTMLInputElement>(null);
+
   return (
     <div
       className={twMerge(
@@ -61,6 +64,8 @@ const AddingWindow: FC<AddingWindowProps> = ({
           onClose();
           setAmount(undefined);
           setNote("");
+
+          amountInputRef.current?.blur();
         }
       }}
     >
@@ -88,13 +93,28 @@ const AddingWindow: FC<AddingWindowProps> = ({
         </Button>
       </header>
 
+      <div id="note-group" className="mb-8 flex flex-col">
+        <label htmlFor="note" className="mb-1 text-lg font-bold">
+          Note
+        </label>
+        <input
+          className="rounded border border-neutral-100 bg-transparent text-lg font-bold tracking-wide"
+          type="text"
+          name="note"
+          id="note"
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+        />
+      </div>
+
       <div id="amount-group" className="mb-4 flex flex-col">
         <label htmlFor="amount" className="mb-1 text-lg font-bold">
           Amount
         </label>
         <input
+          ref={amountInputRef}
           className={twMerge(
-            "border-b-2 border-b-neutral-100 bg-transparent text-lg font-bold tracking-widest",
+            "rounded border border-neutral-100 bg-transparent text-lg font-bold tracking-widest",
             addingType === "income" && "text-green-400",
             addingType === "expense" && "text-red-300",
           )}
@@ -103,20 +123,6 @@ const AddingWindow: FC<AddingWindowProps> = ({
           id="amount"
           value={amount || ""}
           onChange={(e) => setAmount(Number(e.target.value))}
-        />
-      </div>
-
-      <div id="note-group" className="mb-8 flex flex-col">
-        <label htmlFor="note" className="mb-1 text-lg font-bold">
-          Note
-        </label>
-        <input
-          className="break-words border-b-2 border-b-neutral-100 bg-transparent text-lg font-bold tracking-wide"
-          type="text"
-          name="note"
-          id="note"
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
         />
       </div>
 
@@ -130,6 +136,8 @@ const AddingWindow: FC<AddingWindowProps> = ({
           onClose();
           setAmount(undefined);
           setNote("");
+
+          amountInputRef.current?.blur();
         }}
       >
         Save
