@@ -376,7 +376,7 @@ const Home = () => {
   );
 
   const onClickClearAll = useCallback(() => {
-    if (!confirm("Are you sure to clear all unpinned the data?")) {
+    if (!confirm("Are you sure to clear all the unpinned data?")) {
       return;
     }
 
