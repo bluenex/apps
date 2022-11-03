@@ -17,6 +17,8 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="msapplication-TileColor" content="##5bbad5" />
         <meta name="msapplication-config" content="/favicon/browserconfig.xml" />
         <meta name="theme-color" content="#ffffff" />
+
+        <title>Simple Budget</title>
       </Head>
       <Component {...pageProps} />
     </>
