@@ -121,7 +121,11 @@ const ItemRenderer: FC<{
             itemType === "expense" && "text-red-300",
             itemType === "income" && "text-green-400",
           )}
-        >{`${itemType === "expense" ? "-" : "+"}${itemData.amount}`}</p>
+        >{`${
+          itemType === "expense" ? "-" : "+"
+        }${itemData.amount.toLocaleString("en-US", {
+          maximumFractionDigits: 2,
+        })}`}</p>
       </div>
     </>
   );
@@ -181,7 +185,11 @@ const PinnedItemRenderer: FC<{
             itemType === "expense" && "text-red-300",
             itemType === "income" && "text-green-400",
           )}
-        >{`${itemType === "expense" ? "-" : "+"}${itemData.amount}`}</p>
+        >{`${
+          itemType === "expense" ? "-" : "+"
+        }${itemData.amount.toLocaleString("en-US", {
+          maximumFractionDigits: 2,
+        })}`}</p>
       </div>
     </>
   );
@@ -201,7 +209,12 @@ const TotalRenderer: FC<{ amount: number; itemType: ItemType }> = ({
             itemType === "expense" && "text-red-300",
             itemType === "income" && "text-green-400",
           )}
-        >{`${itemType === "expense" ? "-" : "+"}${amount}`}</p>
+        >{`${itemType === "expense" ? "-" : "+"}${amount.toLocaleString(
+          "en-US",
+          {
+            maximumFractionDigits: 2,
+          },
+        )}`}</p>
       </div>
     </div>
   );
@@ -217,7 +230,9 @@ const DiffRenderer: FC<{ value: number }> = ({ value }) => {
         value < 0 && "bg-red-800 bg-opacity-30",
       )}
     >
-      <p>{`${value > 0 ? "+" : ""}${value}`}</p>
+      <p>{`${value > 0 ? "+" : ""}${value.toLocaleString("en-US", {
+        maximumFractionDigits: 2,
+      })}`}</p>
     </div>
   );
 };

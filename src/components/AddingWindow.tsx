@@ -57,7 +57,7 @@ const AddingWindow: FC<AddingWindowProps> = ({
       )}
       onKeyDown={(e) => {
         if (e.code === "Enter" || e.keyCode === 13) {
-          if (!amount || addingType === "hidden") return;
+          if ((!amount && amount !== 0) || addingType === "hidden") return;
 
           onSave(addingType as ItemType, amount, note, editingId);
 
@@ -129,7 +129,7 @@ const AddingWindow: FC<AddingWindowProps> = ({
       <Button
         className="shadow-common w-full rounded-2xl bg-sky-700 py-4 px-8 text-lg"
         onClick={() => {
-          if (!amount || addingType === "hidden") return;
+          if ((!amount && amount !== 0) || addingType === "hidden") return;
 
           onSave(addingType as ItemType, amount, note, editingId);
 
