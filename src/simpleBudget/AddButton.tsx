@@ -26,13 +26,13 @@ const AddButton: FC<AddButtonProps> = ({ onClickAdd, onClickClearAll }) => {
         <div className="relative">
           <div
             className={twMerge(
-              "shadow-dark pointer-events-none grid translate-x-[200%] gap-1.5 rounded-full bg-neutral-500 p-1 transition-all duration-300",
+              "shadow-dark pointer-events-none grid translate-x-[200%] gap-2 rounded-full bg-neutral-500 p-1.5 transition-all duration-300",
               "absolute bottom-[130%] right-0",
               isMenuVisible && "pointer-events-auto translate-x-0",
             )}
           >
             <Button
-              className="mx-auto rounded-full bg-red-800 p-6 shadow-md shadow-gray-600"
+              className="mx-auto rounded-full bg-red-600 bg-opacity-75 p-5 shadow-md shadow-gray-600"
               onClick={() => {
                 onClickAdd("expense");
                 setIsMenuVisible(false);
@@ -41,7 +41,7 @@ const AddButton: FC<AddButtonProps> = ({ onClickAdd, onClickClearAll }) => {
               <FiMinus className="text-2xl" />
             </Button>
             <Button
-              className="mx-auto rounded-full bg-green-800 p-6 shadow-md shadow-gray-600"
+              className="mx-auto rounded-full bg-green-600 bg-opacity-75 p-5 shadow-md shadow-gray-600"
               onClick={() => {
                 onClickAdd("income");
                 setIsMenuVisible(false);
