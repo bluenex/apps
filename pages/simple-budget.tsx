@@ -1,5 +1,4 @@
-import { FC, useCallback, useEffect, useState } from "react";
-import { twMerge } from "tailwind-merge";
+import { useCallback, useEffect, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import Layout from "../src/components/Layout";
 import {
@@ -13,7 +12,9 @@ import {
 } from "../src/simpleBudget/actions";
 import AddButton from "../src/simpleBudget/AddButton";
 import AddingWindow from "../src/simpleBudget/AddingWindow";
+import DiffRenderer from "../src/simpleBudget/DiffRenderer";
 import ItemRenderer from "../src/simpleBudget/ItemRenderer";
+import TotalRenderer from "../src/simpleBudget/TotalRenderer";
 import {
   DataSchema,
   ItemType,
@@ -23,48 +24,6 @@ import {
 const defaultData: DataSchema = {
   expense: [],
   income: [],
-};
-
-const TotalRenderer: FC<{ amount: number; itemType: ItemType }> = ({
-  amount,
-  itemType,
-}) => {
-  return (
-    <div>
-      <hr className="my-2" />
-      <div className="flex w-full justify-between px-2">
-        <p className="font-bold">Total:</p>
-        <p
-          className={twMerge(
-            itemType === "expense" && "text-red-300",
-            itemType === "income" && "text-green-400",
-          )}
-        >{`${itemType === "expense" ? "-" : "+"}${amount.toLocaleString(
-          "en-US",
-          {
-            maximumFractionDigits: 2,
-          },
-        )}`}</p>
-      </div>
-    </div>
-  );
-};
-
-const DiffRenderer: FC<{ value: number }> = ({ value }) => {
-  return (
-    <div
-      className={twMerge(
-        "w-full rounded-2xl p-6 text-center text-xl font-bold tracking-wider shadow",
-        value > 0 && "bg-green-800 bg-opacity-30",
-        value === 0 && "bg-neutral-800 bg-opacity-30",
-        value < 0 && "bg-red-800 bg-opacity-30",
-      )}
-    >
-      <p>{`${value > 0 ? "+" : ""}${value.toLocaleString("en-US", {
-        maximumFractionDigits: 2,
-      })}`}</p>
-    </div>
-  );
 };
 
 const SimpleBudget = () => {
@@ -84,25 +43,16 @@ const SimpleBudget = () => {
   const [, setAmount] = amountHook;
   const [, setNote] = noteHook;
 
-  const onMoveUpHandler = useCallback(
-    (rtype: ItemType, id: string) => {
+  const onMoveHandler = useCallback(
+    (rtype: ItemType, id: string, direction: "up" | "down") => {
       setPersistedData((p) => {
-        return moveRecord(rtype, id, "up")(p);
+        return moveRecord(rtype, id, direction)(p);
       });
     },
     [setPersistedData],
   );
 
-  const onMoveDownHandler = useCallback(
-    (rtype: ItemType, id: string) => {
-      setPersistedData((p) => {
-        return moveRecord(rtype, id, "down")(p);
-      });
-    },
-    [setPersistedData],
-  );
-
-  const onSetPinHandler = useCallback(
+  const onPinHandler = useCallback(
     (rtype: ItemType, id: string, status: boolean) => {
       setPersistedData((p) => {
         return pinRecord(rtype, id, status)(p);
@@ -123,7 +73,7 @@ const SimpleBudget = () => {
     [setPersistedData],
   );
 
-  const onClickClearAll = useCallback(() => {
+  const onDeleteAllUnpinnedHandler = useCallback(() => {
     if (!confirm("Are you sure to clear all the unpinned data?")) {
       return;
     }
@@ -177,10 +127,10 @@ const SimpleBudget = () => {
                     onClick={() =>
                       setMenuVisibleId((p) => (ex.id !== p ? ex.id : undefined))
                     }
-                    onMoveUp={() => onMoveUpHandler("expense", ex.id)}
-                    onMoveDown={() => onMoveDownHandler("expense", ex.id)}
+                    onMoveUp={() => onMoveHandler("expense", ex.id, "up")}
+                    onMoveDown={() => onMoveHandler("expense", ex.id, "down")}
                     onSetPin={() => {
-                      onSetPinHandler("expense", ex.id, !ex.isPinned);
+                      onPinHandler("expense", ex.id, !ex.isPinned);
                     }}
                     onPressEdit={() => {
                       setEditId(ex.id);
@@ -223,10 +173,10 @@ const SimpleBudget = () => {
                         inc.id !== p ? inc.id : undefined,
                       )
                     }
-                    onMoveUp={() => onMoveUpHandler("income", inc.id)}
-                    onMoveDown={() => onMoveDownHandler("income", inc.id)}
+                    onMoveUp={() => onMoveHandler("income", inc.id, "up")}
+                    onMoveDown={() => onMoveHandler("income", inc.id, "down")}
                     onSetPin={() => {
-                      onSetPinHandler("income", inc.id, !inc.isPinned);
+                      onPinHandler("income", inc.id, !inc.isPinned);
                     }}
                     onPressEdit={() => {
                       setEditId(inc.id);
@@ -265,7 +215,7 @@ const SimpleBudget = () => {
 
         <AddButton
           onClickAdd={(x) => setAddingType(x)}
-          onClickClearAll={onClickClearAll}
+          onClickClearAll={onDeleteAllUnpinnedHandler}
         />
       </section>
     </Layout>
