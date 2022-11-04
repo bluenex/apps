@@ -8,6 +8,10 @@
 
     @apply antialiased;
   }
+
+  a {
+    @apply text-sky-500 underline underline-offset-2;
+  }
 }
 
 @layer utilities {

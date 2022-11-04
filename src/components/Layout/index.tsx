@@ -4,9 +4,10 @@ import { twMerge } from "tailwind-merge";
 interface LayoutProps {
   children: ReactNode;
   className?: string;
+  title?: string;
 }
 
-const Layout: FC<LayoutProps> = ({ children, className }) => {
+const Layout: FC<LayoutProps> = ({ children, className, title }) => {
   return (
     <div
       className={twMerge(
@@ -14,9 +15,9 @@ const Layout: FC<LayoutProps> = ({ children, className }) => {
         className,
       )}
     >
-      <header className="flex h-14 items-center bg-neutral-600 bg-opacity-60 shadow-md">
+      <header className="flex items-center bg-neutral-600 bg-opacity-60 py-3 text-center shadow-md">
         <div className="container mx-auto px-4">
-          <h1 className="text-xl font-bold">Simple Budget</h1>
+          <h1 className="text-xl font-bold">{title || "Apps"}</h1>
         </div>
       </header>
 
