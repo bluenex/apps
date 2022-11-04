@@ -12,8 +12,8 @@ import { useLocalStorage } from "usehooks-ts";
 import { v4 as uuidv4 } from "uuid";
 import Button from "../src/components/Button";
 import Layout from "../src/components/Layout";
-import AddButton from "../src/components/simpleBudget/AddButton";
-import AddingWindow from "../src/components/simpleBudget/AddingWindow";
+import AddButton from "../src/simpleBudget/AddButton";
+import AddingWindow from "../src/simpleBudget/AddingWindow";
 
 export type ItemType = "income" | "expense";
 export type ItemTypeWithHidden = ItemType | "hidden";
