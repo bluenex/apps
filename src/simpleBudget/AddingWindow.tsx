@@ -82,7 +82,7 @@ const AddingWindow: FC<AddingWindowProps> = ({
           }
         }}
       >
-        <header className="mb-6 flex items-center justify-between">
+        <header className="mb-3 flex items-center justify-between">
           <h2 className="text-2xl font-bold">
             {"Adding "}
             <span
@@ -100,7 +100,7 @@ const AddingWindow: FC<AddingWindowProps> = ({
           </Button>
         </header>
 
-        <div id="note-group" className="mb-4 flex flex-col">
+        <div id="note-group" className="mb-2 flex flex-col">
           <label htmlFor="note" className="mb-1 text-lg font-bold">
             Note
           </label>
@@ -114,7 +114,7 @@ const AddingWindow: FC<AddingWindowProps> = ({
           />
         </div>
 
-        <div id="amount-group" className="mb-8 flex flex-col">
+        <div id="amount-group" className="mb-4 flex flex-col">
           <label htmlFor="amount" className="mb-1 text-lg font-bold">
             Amount
           </label>
