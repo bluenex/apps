@@ -64,8 +64,8 @@ const AddingWindow: FC<AddingWindowProps> = ({
     >
       <div
         className={twMerge(
-          "fixed top-[10%]",
-          "shadow-common fixed left-[5%] w-[calc(100%-10%)] rounded-2xl bg-neutral-500 p-5",
+          "fixed top-[10%] left-[5%] w-[calc(100%-10%)]",
+          "shadow-dark rounded-lg bg-neutral-500 p-5 text-neutral-100",
           "sm:left-[25%] sm:max-w-[50%] xl:left-[37.5%] xl:max-w-[25%]",
           "pointer-events-none translate-x-[100vw] transition-all duration-300",
           addingType !== "hidden" && "pointer-events-auto translate-x-0",
@@ -100,12 +100,12 @@ const AddingWindow: FC<AddingWindowProps> = ({
           </Button>
         </header>
 
-        <div id="note-group" className="mb-8 flex flex-col">
+        <div id="note-group" className="mb-4 flex flex-col">
           <label htmlFor="note" className="mb-1 text-lg font-bold">
             Note
           </label>
           <input
-            className="rounded border border-neutral-100 bg-transparent text-lg font-bold tracking-wide"
+            className="rounded border border-neutral-300 bg-transparent text-lg font-bold tracking-wide"
             type="text"
             name="note"
             id="note"
@@ -114,14 +114,14 @@ const AddingWindow: FC<AddingWindowProps> = ({
           />
         </div>
 
-        <div id="amount-group" className="mb-4 flex flex-col">
+        <div id="amount-group" className="mb-8 flex flex-col">
           <label htmlFor="amount" className="mb-1 text-lg font-bold">
             Amount
           </label>
           <input
             ref={amountInputRef}
             className={twMerge(
-              "rounded border border-neutral-100 bg-transparent text-lg font-bold tracking-widest",
+              "rounded border border-neutral-300 bg-transparent text-lg font-bold tracking-widest",
               addingType === "income" && "text-green-400",
               addingType === "expense" && "text-red-300",
             )}
@@ -134,7 +134,7 @@ const AddingWindow: FC<AddingWindowProps> = ({
         </div>
 
         <Button
-          className="shadow-common w-full rounded-2xl bg-sky-700 py-4 px-8 text-lg"
+          className="shadow-thin w-full rounded-lg bg-sky-700 py-4 px-8 text-lg"
           onClick={() => {
             if ((!amount && amount !== 0) || addingType === "hidden") return;
 

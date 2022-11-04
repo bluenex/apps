@@ -15,7 +15,11 @@
 }
 
 @layer utilities {
-  .shadow-common {
+  .shadow-dark {
     @apply shadow-lg shadow-gray-800;
+  }
+
+  .shadow-thin {
+    @apply shadow-lg shadow-gray-600;
   }
 }
