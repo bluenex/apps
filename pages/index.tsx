@@ -11,6 +11,14 @@ const Home = () => {
               <a>Simple Budget</a>
             </Link>
           </li>
+          <li>
+            <Link
+              href="https://stackblitz.com/edit/bluenex-react-collection?file=src/examples/ButtonExamples.tsx"
+              passHref
+            >
+              <a target="_blank">React Collection</a>
+            </Link>
+          </li>
         </ul>
       </main>
     </Layout>
