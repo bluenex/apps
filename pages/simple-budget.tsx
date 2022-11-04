@@ -2,34 +2,32 @@ import { FC, useCallback, useEffect, useState } from "react";
 import {
   FiArrowDown,
   FiArrowUp,
-  FiEdit,
-  FiChevronsUp,
   FiChevronsDown,
+  FiChevronsUp,
+  FiEdit,
   FiTrash2,
 } from "react-icons/fi";
 import { twMerge } from "tailwind-merge";
 import { useLocalStorage } from "usehooks-ts";
-import { v4 as uuidv4 } from "uuid";
 import Button from "../src/components/Button";
 import Layout from "../src/components/Layout";
+import {
+  addRecord,
+  deleteAllUnpinnedRecord,
+  deleteRecord,
+  moveDown,
+  moveUp,
+  setPinStatus,
+  updateRecord,
+} from "../src/simpleBudget/actions";
 import AddButton from "../src/simpleBudget/AddButton";
 import AddingWindow from "../src/simpleBudget/AddingWindow";
-
-export type ItemType = "income" | "expense";
-export type ItemTypeWithHidden = ItemType | "hidden";
-
-type RecordItem = {
-  id: string;
-  amount: number;
-  note: string;
-  isPinned: boolean;
-};
-
-type DataSchema = {
-  expense: RecordItem[];
-  income: RecordItem[];
-  diff?: number;
-};
+import {
+  DataSchema,
+  ItemType,
+  ItemTypeWithHidden,
+  RecordItem,
+} from "../src/simpleBudget/types";
 
 const getSum = (data: RecordItem[]) => {
   return data.reduce((acc, cur) => acc + cur.amount, 0);
@@ -278,113 +276,28 @@ const SimpleBudget = () => {
   const [, setAmount] = amountHook;
   const [, setNote] = noteHook;
 
-  const dataUpdater = useCallback(
-    (
-      currentType: ItemType,
-      amount: number,
-      note: string,
-      editingId?: string,
-    ) => {
-      setPersistedData((p) => {
-        let updatedItem = { id: uuidv4(), amount, note, isPinned: false };
-
-        // this is a bit hacky as it edits the item mutably in edit mode
-        if (editingId) {
-          const tmp = p[currentType].find((x) => x.id === editingId);
-
-          if (!tmp) return p;
-
-          updatedItem = tmp;
-
-          updatedItem.id = editingId;
-          updatedItem.amount = amount;
-          updatedItem.note = note;
-
-          const diff = getSum(p.income) - getSum(p.expense);
-
-          // reset editId here
-          setEditId(undefined);
-
-          return {
-            ...p,
-            diff,
-          };
-        }
-
-        // as for create mode, the item is created immutably
-        const updated = {
-          ...p,
-          [currentType]: [...p[currentType], updatedItem],
-        };
-        const diff = getSum(updated.income) - getSum(updated.expense);
-
-        return {
-          ...updated,
-          diff,
-        };
-      });
-    },
-    [setPersistedData],
-  );
-
   const onMoveUpHandler = useCallback(
-    (currentType: ItemType, id: string) => {
+    (rtype: ItemType, id: string) => {
       setPersistedData((p) => {
-        const updatedItem = p[currentType].find((x) => x.id === id);
-
-        if (!updatedItem) return p;
-
-        const updatedItemInd = p[currentType].indexOf(updatedItem);
-        const swapItem = p[currentType][updatedItemInd - 1];
-
-        return {
-          ...p,
-          [currentType]: [
-            ...p[currentType].slice(0, updatedItemInd - 1),
-            updatedItem,
-            swapItem,
-            ...p[currentType].slice(updatedItemInd + 1),
-          ],
-        };
+        return moveUp(rtype, id)(p);
       });
     },
     [setPersistedData],
   );
 
   const onMoveDownHandler = useCallback(
-    (currentType: ItemType, id: string) => {
+    (rtype: ItemType, id: string) => {
       setPersistedData((p) => {
-        const updatedItem = p[currentType].find((x) => x.id === id);
-
-        if (!updatedItem) return p;
-
-        const updatedItemInd = p[currentType].indexOf(updatedItem);
-        const swapItem = p[currentType][updatedItemInd + 1];
-
-        return {
-          ...p,
-          [currentType]: [
-            ...p[currentType].slice(0, updatedItemInd),
-            swapItem,
-            updatedItem,
-            ...p[currentType].slice(updatedItemInd + 2),
-          ],
-        };
+        return moveDown(rtype, id)(p);
       });
     },
     [setPersistedData],
   );
 
   const onSetPinHandler = useCallback(
-    (currentType: ItemType, id: string, status: boolean) => {
+    (rtype: ItemType, id: string, status: boolean) => {
       setPersistedData((p) => {
-        const updatedItem = p[currentType].find((x) => x.id === id);
-
-        if (!updatedItem) return p;
-
-        updatedItem.isPinned = status;
-
-        return p;
+        return setPinStatus(rtype, id, status)(p);
       });
       setMenuVisibleId(undefined);
     },
@@ -392,23 +305,11 @@ const SimpleBudget = () => {
   );
 
   const onDeleteHandler = useCallback(
-    (currentType: ItemType, id: string, note: string) => {
+    (rtype: ItemType, id: string, note: string) => {
       if (!confirm(`Are you sure to delete "${note}"?`)) return;
 
       setPersistedData((p) => {
-        const updatedItem = p[currentType].find((x) => x.id === id);
-
-        if (!updatedItem) return p;
-
-        const updatedItemInd = p[currentType].indexOf(updatedItem);
-
-        return {
-          ...p,
-          [currentType]: [
-            ...p[currentType].slice(0, updatedItemInd),
-            ...p[currentType].slice(updatedItemInd + 1),
-          ],
-        };
+        return deleteRecord(rtype, id)(p);
       });
     },
     [setPersistedData],
@@ -420,16 +321,12 @@ const SimpleBudget = () => {
     }
 
     if (
-      !confirm("Are you REALLY REALLTY sure to clear all the unpinned data?")
+      !confirm("Are you REALLY REALLY sure to clear all the unpinned data?")
     ) {
       return;
     }
 
-    setPersistedData((p) => ({
-      ...p,
-      expense: p.expense.filter((x) => x.isPinned),
-      income: p.income.filter((x) => x.isPinned),
-    }));
+    setPersistedData((p) => deleteAllUnpinnedRecord(p));
   }, [setPersistedData]);
 
   useEffect(() => {
@@ -598,7 +495,7 @@ const SimpleBudget = () => {
                         setAddingType("income");
                       }}
                       onPressDelete={() => {
-                        onDeleteHandler("expense", inc.id, inc.note);
+                        onDeleteHandler("income", inc.id, inc.note);
                       }}
                     />
                   ),
@@ -615,7 +512,13 @@ const SimpleBudget = () => {
           addingType={addingType}
           amountHook={amountHook}
           noteHook={noteHook}
-          onSave={dataUpdater}
+          onSave={(rtype, amount, note, editingId) =>
+            setPersistedData((p) =>
+              editingId
+                ? updateRecord(rtype, amount, note, editingId)(p)
+                : addRecord(rtype, amount, note)(p),
+            )
+          }
           onClose={() => setAddingType("hidden")}
           editingId={editId}
         />
