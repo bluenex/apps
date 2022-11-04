@@ -123,7 +123,7 @@ const AddingWindow: FC<AddingWindowProps> = ({
             className={twMerge(
               "rounded border border-neutral-300 bg-transparent text-lg font-bold tracking-widest",
               addingType === "income" && "text-green-400",
-              addingType === "expense" && "text-red-300",
+              addingType === "expense" && "text-red-400",
             )}
             type="number"
             name="amount"
