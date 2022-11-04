@@ -1,220 +1,28 @@
 import { FC, useCallback, useEffect, useState } from "react";
-import {
-  FiArrowDown,
-  FiArrowUp,
-  FiChevronsDown,
-  FiChevronsUp,
-  FiEdit,
-  FiTrash2,
-} from "react-icons/fi";
 import { twMerge } from "tailwind-merge";
 import { useLocalStorage } from "usehooks-ts";
-import Button from "../src/components/Button";
 import Layout from "../src/components/Layout";
 import {
   addRecord,
   deleteAllUnpinnedRecord,
   deleteRecord,
-  moveDown,
-  moveUp,
-  setPinStatus,
+  getSum,
+  moveRecord,
+  pinRecord,
   updateRecord,
 } from "../src/simpleBudget/actions";
 import AddButton from "../src/simpleBudget/AddButton";
 import AddingWindow from "../src/simpleBudget/AddingWindow";
+import ItemRenderer from "../src/simpleBudget/ItemRenderer";
 import {
   DataSchema,
   ItemType,
   ItemTypeWithHidden,
-  RecordItem,
 } from "../src/simpleBudget/types";
-
-const getSum = (data: RecordItem[]) => {
-  return data.reduce((acc, cur) => acc + cur.amount, 0);
-};
 
 const defaultData: DataSchema = {
   expense: [],
   income: [],
-};
-
-const ItemRenderer: FC<{
-  itemData: RecordItem;
-  itemType: ItemType;
-  onClick: () => void;
-  isMenuVisible: boolean;
-  onMoveUp: () => void;
-  canMoveUp: boolean;
-  onMoveDown: () => void;
-  canMoveDown: boolean;
-  onSetPin: () => void;
-  onPressEdit: () => void;
-  onPressDelete: () => void;
-}> = ({
-  itemData,
-  itemType,
-  isMenuVisible,
-  onClick,
-  onMoveUp,
-  canMoveUp,
-  onMoveDown,
-  canMoveDown,
-  onSetPin,
-  onPressEdit,
-  onPressDelete,
-}) => {
-  return (
-    <>
-      <div
-        className={twMerge(
-          "pointer-events-none h-0 w-full rounded-t bg-black bg-opacity-25 opacity-0 transition-all duration-300",
-          "flex justify-evenly text-lg",
-          isMenuVisible && "pointer-events-auto h-10 opacity-100",
-        )}
-      >
-        <Button
-          className="grid flex-1 place-content-center disabled:text-neutral-500"
-          disabled={!canMoveUp}
-          onClick={onMoveUp}
-        >
-          <FiArrowUp />
-        </Button>
-        <Button
-          className="grid flex-1 place-content-center disabled:text-neutral-500"
-          disabled={!canMoveDown}
-          onClick={onMoveDown}
-        >
-          <FiArrowDown />
-        </Button>
-        <Button
-          className="grid flex-1 place-content-center disabled:text-neutral-500"
-          onClick={onSetPin}
-        >
-          <FiChevronsUp />
-        </Button>
-        <Button
-          id="adding-window-triggerer"
-          className="grid flex-1 place-content-center"
-          onClick={onPressEdit}
-        >
-          <FiEdit />
-        </Button>
-        <Button
-          className="grid flex-1 place-content-center"
-          onClick={onPressDelete}
-        >
-          <FiTrash2 />
-        </Button>
-      </div>
-
-      <div
-        className={twMerge(
-          "mb-0.5 flex w-full justify-between p-0.5 px-2 active:bg-black active:bg-opacity-10",
-          isMenuVisible && "bg-black bg-opacity-25",
-        )}
-        onClick={() => onClick()}
-      >
-        <p>{itemData.note}</p>
-        <p
-          className={twMerge(
-            itemType === "expense" && "text-red-300",
-            itemType === "income" && "text-green-400",
-          )}
-        >{`${
-          itemType === "expense" ? "-" : "+"
-        }${itemData.amount.toLocaleString("en-US", {
-          maximumFractionDigits: 2,
-        })}`}</p>
-      </div>
-    </>
-  );
-};
-
-const PinnedItemRenderer: FC<{
-  itemData: RecordItem;
-  itemType: ItemType;
-  onClick: () => void;
-  isMenuVisible: boolean;
-  onMoveUp: () => void;
-  canMoveUp: boolean;
-  onMoveDown: () => void;
-  canMoveDown: boolean;
-  onSetPin: () => void;
-  onPressEdit: () => void;
-}> = ({
-  itemData,
-  itemType,
-  isMenuVisible,
-  onMoveUp,
-  canMoveUp,
-  onMoveDown,
-  canMoveDown,
-  onClick,
-  onSetPin,
-  onPressEdit,
-}) => {
-  return (
-    <>
-      <div
-        className={twMerge(
-          "pointer-events-none h-0 w-full rounded-t bg-black bg-opacity-25 opacity-0 transition-all duration-300",
-          "flex justify-evenly text-lg",
-          isMenuVisible && "pointer-events-auto h-10 opacity-100",
-        )}
-      >
-        <Button
-          className="grid flex-1 place-content-center disabled:text-neutral-500"
-          disabled={!canMoveUp}
-          onClick={onMoveUp}
-        >
-          <FiArrowUp />
-        </Button>
-        <Button
-          className="grid flex-1 place-content-center disabled:text-neutral-500"
-          disabled={!canMoveDown}
-          onClick={onMoveDown}
-        >
-          <FiArrowDown />
-        </Button>
-        <Button
-          className="grid flex-1 place-content-center disabled:text-neutral-500"
-          onClick={onSetPin}
-        >
-          <FiChevronsDown />
-        </Button>
-        <Button
-          id="adding-window-triggerer"
-          className="grid flex-1 place-content-center"
-          onClick={onPressEdit}
-        >
-          <FiEdit />
-        </Button>
-      </div>
-
-      <div
-        className={twMerge(
-          "mb-0.5 flex w-full justify-between p-0.5 px-2 font-semibold active:bg-black active:bg-opacity-10",
-          isMenuVisible && "bg-black bg-opacity-25",
-        )}
-        onClick={() => onClick()}
-      >
-        <p className="flex items-center gap-1">
-          <FiChevronsUp />
-          {itemData.note}
-        </p>
-        <p
-          className={twMerge(
-            itemType === "expense" && "text-red-300",
-            itemType === "income" && "text-green-400",
-          )}
-        >{`${
-          itemType === "expense" ? "-" : "+"
-        }${itemData.amount.toLocaleString("en-US", {
-          maximumFractionDigits: 2,
-        })}`}</p>
-      </div>
-    </>
-  );
 };
 
 const TotalRenderer: FC<{ amount: number; itemType: ItemType }> = ({
@@ -279,7 +87,7 @@ const SimpleBudget = () => {
   const onMoveUpHandler = useCallback(
     (rtype: ItemType, id: string) => {
       setPersistedData((p) => {
-        return moveUp(rtype, id)(p);
+        return moveRecord(rtype, id, "up")(p);
       });
     },
     [setPersistedData],
@@ -288,7 +96,7 @@ const SimpleBudget = () => {
   const onMoveDownHandler = useCallback(
     (rtype: ItemType, id: string) => {
       setPersistedData((p) => {
-        return moveDown(rtype, id)(p);
+        return moveRecord(rtype, id, "down")(p);
       });
     },
     [setPersistedData],
@@ -297,7 +105,7 @@ const SimpleBudget = () => {
   const onSetPinHandler = useCallback(
     (rtype: ItemType, id: string, status: boolean) => {
       setPersistedData((p) => {
-        return setPinStatus(rtype, id, status)(p);
+        return pinRecord(rtype, id, status)(p);
       });
       setMenuVisibleId(undefined);
     },
@@ -351,76 +159,41 @@ const SimpleBudget = () => {
             <div id="expense" className="mb-6">
               <h2 className="mb-2 text-lg font-bold">Expense</h2>
 
-              {data.expense.map(
-                (ex, ind, arr) =>
-                  ex.isPinned && (
-                    <PinnedItemRenderer
-                      itemType="expense"
-                      key={ex.id}
-                      itemData={ex}
-                      isMenuVisible={menuVisibleId === ex.id}
-                      onClick={() =>
-                        setMenuVisibleId((p) =>
-                          ex.id !== p ? ex.id : undefined,
-                        )
-                      }
-                      canMoveUp={ind !== 0}
-                      onMoveUp={() => {
-                        onMoveUpHandler("expense", ex.id);
-                      }}
-                      canMoveDown={ind !== arr.length - 1}
-                      onMoveDown={() => {
-                        onMoveDownHandler("expense", ex.id);
-                      }}
-                      onSetPin={() => {
-                        onSetPinHandler("expense", ex.id, false);
-                      }}
-                      onPressEdit={() => {
-                        setEditId(ex.id);
-                        setAmount(ex.amount);
-                        setNote(ex.note);
-                        setAddingType("expense");
-                      }}
-                    />
-                  ),
-              )}
+              {data.expense.map((ex, ind, arr) => {
+                const pinnedCount = arr.filter((x) => x.isPinned).length;
+                const canMoveUp = ex.isPinned ? ind > 0 : ind > pinnedCount;
+                const canMoveDown = ex.isPinned
+                  ? ind < pinnedCount - 1
+                  : ind < arr.length - 1;
 
-              {data.expense.map(
-                (ex, ind, arr) =>
-                  !ex.isPinned && (
-                    <ItemRenderer
-                      itemType="expense"
-                      key={ex.id}
-                      itemData={ex}
-                      isMenuVisible={menuVisibleId === ex.id}
-                      onClick={() =>
-                        setMenuVisibleId((p) =>
-                          ex.id !== p ? ex.id : undefined,
-                        )
-                      }
-                      canMoveUp={ind !== 0}
-                      onMoveUp={() => {
-                        onMoveUpHandler("expense", ex.id);
-                      }}
-                      canMoveDown={ind !== arr.length - 1}
-                      onMoveDown={() => {
-                        onMoveDownHandler("expense", ex.id);
-                      }}
-                      onSetPin={() => {
-                        onSetPinHandler("expense", ex.id, true);
-                      }}
-                      onPressEdit={() => {
-                        setEditId(ex.id);
-                        setAmount(ex.amount);
-                        setNote(ex.note);
-                        setAddingType("expense");
-                      }}
-                      onPressDelete={() => {
-                        onDeleteHandler("expense", ex.id, ex.note);
-                      }}
-                    />
-                  ),
-              )}
+                return (
+                  <ItemRenderer
+                    key={ex.id}
+                    itemType="expense"
+                    itemData={ex}
+                    isMenuVisible={menuVisibleId === ex.id}
+                    canMoveUp={canMoveUp}
+                    canMoveDown={canMoveDown}
+                    onClick={() =>
+                      setMenuVisibleId((p) => (ex.id !== p ? ex.id : undefined))
+                    }
+                    onMoveUp={() => onMoveUpHandler("expense", ex.id)}
+                    onMoveDown={() => onMoveDownHandler("expense", ex.id)}
+                    onSetPin={() => {
+                      onSetPinHandler("expense", ex.id, !ex.isPinned);
+                    }}
+                    onPressEdit={() => {
+                      setEditId(ex.id);
+                      setAmount(ex.amount);
+                      setNote(ex.note);
+                      setAddingType("expense");
+                    }}
+                    onPressDelete={() => {
+                      onDeleteHandler("expense", ex.id, ex.note);
+                    }}
+                  />
+                );
+              })}
 
               <TotalRenderer itemType="expense" amount={getSum(data.expense)} />
             </div>
@@ -430,76 +203,43 @@ const SimpleBudget = () => {
             <div id="income" className="mb-6">
               <h2 className="mb-2 text-lg font-bold">Income</h2>
 
-              {data.income.map(
-                (inc, ind, arr) =>
-                  inc.isPinned && (
-                    <PinnedItemRenderer
-                      itemType="income"
-                      key={inc.id}
-                      itemData={inc}
-                      isMenuVisible={menuVisibleId === inc.id}
-                      onClick={() =>
-                        setMenuVisibleId((p) =>
-                          inc.id !== p ? inc.id : undefined,
-                        )
-                      }
-                      canMoveUp={ind !== 0}
-                      onMoveUp={() => {
-                        onMoveUpHandler("income", inc.id);
-                      }}
-                      canMoveDown={ind !== arr.length - 1}
-                      onMoveDown={() => {
-                        onMoveDownHandler("income", inc.id);
-                      }}
-                      onSetPin={() => {
-                        onSetPinHandler("income", inc.id, false);
-                      }}
-                      onPressEdit={() => {
-                        setEditId(inc.id);
-                        setAmount(inc.amount);
-                        setNote(inc.note);
-                        setAddingType("income");
-                      }}
-                    />
-                  ),
-              )}
+              {data.income.map((inc, ind, arr) => {
+                const pinnedCount = arr.filter((x) => x.isPinned).length;
+                const canMoveUp = inc.isPinned ? ind > 0 : ind > pinnedCount;
+                const canMoveDown = inc.isPinned
+                  ? ind < pinnedCount - 1
+                  : ind < arr.length - 1;
 
-              {data.income.map(
-                (inc, ind, arr) =>
-                  !inc.isPinned && (
-                    <ItemRenderer
-                      itemType="income"
-                      key={inc.id}
-                      itemData={inc}
-                      isMenuVisible={menuVisibleId === inc.id}
-                      onClick={() =>
-                        setMenuVisibleId((p) =>
-                          inc.id !== p ? inc.id : undefined,
-                        )
-                      }
-                      canMoveUp={ind !== 0}
-                      onMoveUp={() => {
-                        onMoveUpHandler("income", inc.id);
-                      }}
-                      canMoveDown={ind !== arr.length - 1}
-                      onMoveDown={() => {
-                        onMoveDownHandler("income", inc.id);
-                      }}
-                      onSetPin={() => {
-                        onSetPinHandler("income", inc.id, true);
-                      }}
-                      onPressEdit={() => {
-                        setEditId(inc.id);
-                        setAmount(inc.amount);
-                        setNote(inc.note);
-                        setAddingType("income");
-                      }}
-                      onPressDelete={() => {
-                        onDeleteHandler("income", inc.id, inc.note);
-                      }}
-                    />
-                  ),
-              )}
+                return (
+                  <ItemRenderer
+                    key={inc.id}
+                    itemType="income"
+                    itemData={inc}
+                    isMenuVisible={menuVisibleId === inc.id}
+                    canMoveUp={canMoveUp}
+                    canMoveDown={canMoveDown}
+                    onClick={() =>
+                      setMenuVisibleId((p) =>
+                        inc.id !== p ? inc.id : undefined,
+                      )
+                    }
+                    onMoveUp={() => onMoveUpHandler("income", inc.id)}
+                    onMoveDown={() => onMoveDownHandler("income", inc.id)}
+                    onSetPin={() => {
+                      onSetPinHandler("income", inc.id, !inc.isPinned);
+                    }}
+                    onPressEdit={() => {
+                      setEditId(inc.id);
+                      setAmount(inc.amount);
+                      setNote(inc.note);
+                      setAddingType("income");
+                    }}
+                    onPressDelete={() => {
+                      onDeleteHandler("income", inc.id, inc.note);
+                    }}
+                  />
+                );
+              })}
 
               <TotalRenderer itemType="income" amount={getSum(data.income)} />
             </div>
