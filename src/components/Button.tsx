@@ -10,7 +10,11 @@ const Button = (
   return (
     <button
       {...btnProps}
-      className={twMerge("active:scale-95", btnProps.className)}
+      className={twMerge(
+        "active:scale-95",
+        "disabled:active:scale-100",
+        btnProps.className,
+      )}
     />
   );
 };
