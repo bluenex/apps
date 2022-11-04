@@ -13,7 +13,7 @@ const TotalRenderer: FC<{ amount: number; itemType: ItemType }> = ({
         <p className="font-bold">Total:</p>
         <p
           className={twMerge(
-            itemType === "expense" && "text-red-300",
+            itemType === "expense" && "text-red-400",
             itemType === "income" && "text-green-400",
           )}
         >{`${itemType === "expense" ? "-" : "+"}${amount.toLocaleString(

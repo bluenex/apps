@@ -88,7 +88,7 @@ const AddingWindow: FC<AddingWindowProps> = ({
             <span
               className={twMerge(
                 addingType === "income" && "text-green-400",
-                addingType === "expense" && "text-red-300",
+                addingType === "expense" && "text-red-400",
               )}
             >
               {upperFirst(addingType)}
