@@ -1,9 +1,9 @@
 import { FC, useCallback, useState } from "react";
 import { FiPlus, FiMinus, FiTrash2 } from "react-icons/fi";
 import { twMerge } from "tailwind-merge";
-import { ItemType } from "../../pages/simple-budget";
-import Button from "./Button";
-import TabOutsideDetector from "./TabOutsideDetector";
+import { ItemType } from "../../../pages/simple-budget";
+import Button from "../Button";
+import TabOutsideDetector from "../TabOutsideDetector";
 
 interface AddButtonProps {
   onClickAdd: (t: ItemType) => void;

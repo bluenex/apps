@@ -9,9 +9,9 @@ import {
 } from "react";
 import { FiX } from "react-icons/fi";
 import { twMerge } from "tailwind-merge";
-import { ItemType, ItemTypeWithHidden } from "../../pages/simple-budget";
-import Button from "./Button";
-import TabOutsideDetector from "./TabOutsideDetector";
+import { ItemType, ItemTypeWithHidden } from "../../../pages/simple-budget";
+import Button from "../Button";
+import TabOutsideDetector from "../TabOutsideDetector";
 
 const upperFirst = (x?: string) => x && `${x[0].toUpperCase()}${x.slice(1)}`;
 

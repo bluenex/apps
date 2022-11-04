@@ -10,10 +10,10 @@ import {
 import { twMerge } from "tailwind-merge";
 import { useLocalStorage } from "usehooks-ts";
 import { v4 as uuidv4 } from "uuid";
-import AddButton from "../src/components/AddButton";
-import AddingWindow from "../src/components/AddingWindow";
 import Button from "../src/components/Button";
 import Layout from "../src/components/Layout";
+import AddButton from "../src/components/simpleBudget/AddButton";
+import AddingWindow from "../src/components/simpleBudget/AddingWindow";
 
 export type ItemType = "income" | "expense";
 export type ItemTypeWithHidden = ItemType | "hidden";
