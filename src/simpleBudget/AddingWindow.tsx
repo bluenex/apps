@@ -5,6 +5,7 @@ import {
   HTMLAttributes,
   SetStateAction,
   useCallback,
+  useEffect,
   useRef,
 } from "react";
 import { FiX } from "react-icons/fi";
@@ -45,6 +46,7 @@ const AddingWindow: FC<AddingWindowProps> = ({
   const [amount, setAmount] = amountHook;
   const [note, setNote] = noteHook;
 
+  const noteInputRef = useRef<HTMLInputElement>(null);
   const amountInputRef = useRef<HTMLInputElement>(null);
 
   const handleCleanUpOnClose = useCallback(() => {
@@ -56,6 +58,12 @@ const AddingWindow: FC<AddingWindowProps> = ({
   const handleTabOutside = useCallback(() => {
     handleCleanUpOnClose();
   }, [handleCleanUpOnClose]);
+
+  useEffect(() => {
+    if (addingType !== "hidden") {
+      noteInputRef.current?.focus();
+    }
+  }, [addingType]);
 
   return (
     <TabOutsideDetector
@@ -105,6 +113,7 @@ const AddingWindow: FC<AddingWindowProps> = ({
             Note
           </label>
           <input
+            ref={noteInputRef}
             className="rounded border border-neutral-300 bg-transparent text-lg font-bold tracking-wide"
             type="text"
             name="note"
