@@ -1,7 +1,11 @@
-# with-ts-tailwind
+# Bluenex's apps
 
-A bare repository to start a new project with Next.js + TS + Tailwind CSS
+A repository for web apps collection built for fun or for personal use.
 
-## Editor
+## Deployment
 
-Visual Studio Code with [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss) extension.
+This project is built and hosted by Cloudflare Pages as a static site and can be accessed at https://apps.bluenex.dev.
+
+### Known issues
+
+- Tried Next SSR build on Cloudflare Pages and it still doesn't work as expect. Root page is working properly but other pages go 404. Will try again next time.
