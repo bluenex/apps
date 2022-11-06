@@ -1,5 +1,12 @@
 import { FC } from "react";
-import { FiArrowDown, FiArrowUp, FiEdit, FiTrash2 } from "react-icons/fi";
+import {
+  FiArrowDown,
+  FiArrowUp,
+  FiEdit,
+  FiEye,
+  FiEyeOff,
+  FiTrash2,
+} from "react-icons/fi";
 import { TbPin, TbPinnedOff } from "react-icons/tb";
 import { twMerge } from "tailwind-merge";
 import Button from "../components/Button";
@@ -17,6 +24,7 @@ const ItemRenderer: FC<{
   onPressEdit: () => void;
   onSetPin: () => void;
   onPressDelete?: () => void;
+  onExclude: () => void;
 }> = ({
   itemData,
   itemType,
@@ -29,8 +37,9 @@ const ItemRenderer: FC<{
   onPressEdit,
   onSetPin,
   onPressDelete,
+  onExclude,
 }) => {
-  const { isPinned } = itemData;
+  const { isPinned, isExcluded } = itemData;
 
   return (
     <>
@@ -41,6 +50,12 @@ const ItemRenderer: FC<{
           isMenuVisible && "pointer-events-auto h-10 opacity-100",
         )}
       >
+        <Button
+          className="grid flex-1 place-content-center disabled:text-neutral-500"
+          onClick={onExclude}
+        >
+          {isExcluded ? <FiEye /> : <FiEyeOff />}
+        </Button>
         <Button
           className="grid flex-1 place-content-center disabled:text-neutral-500"
           disabled={!canMoveUp}
@@ -83,6 +98,7 @@ const ItemRenderer: FC<{
           "mb-0.5 flex w-full justify-between p-0.5 px-2 active:bg-black active:bg-opacity-10",
           isMenuVisible && "bg-black bg-opacity-25",
           isPinned && "font-semibold",
+          isExcluded && "line-through opacity-30 grayscale",
         )}
         onClick={() => onClick()}
       >

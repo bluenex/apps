@@ -5,7 +5,8 @@ export type RecordItem = {
   id: string;
   amount: number;
   note: string;
-  isPinned: boolean;
+  isPinned?: boolean;
+  isExcluded?: boolean;
 };
 
 export type DataSchema = {

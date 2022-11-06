@@ -3,7 +3,10 @@ import { DataSchema, ItemType, RecordItem } from "./types";
 
 // -- helpers
 export const getSum = (dataOfType: RecordItem[]) => {
-  return dataOfType.reduce((acc, cur) => acc + cur.amount, 0);
+  return dataOfType.reduce(
+    (acc, cur) => (!cur.isExcluded ? acc + cur.amount : acc),
+    0,
+  );
 };
 
 const getDiff = (state: DataSchema) => {
@@ -49,10 +52,7 @@ const addRecord =
 
     const diff = getDiff(updatedState);
 
-    return {
-      ...updatedState,
-      diff,
-    };
+    return { ...updatedState, diff };
   };
 
 const updateRecord =
@@ -80,10 +80,33 @@ const updateRecord =
 
     const diff = getDiff(updatedState);
 
-    return {
-      ...updatedState,
-      diff,
+    return { ...updatedState, diff };
+  };
+
+const excludeRecord =
+  (rtype: ItemType, id: string, status: boolean) => (prevState: DataSchema) => {
+    const updatedState = {
+      ...prevState,
+      [rtype]: sortData(
+        prevState[rtype].reduce((acc, cur) => {
+          if (cur.id === id) {
+            return [
+              ...acc,
+              {
+                ...cur,
+                isExcluded: status,
+              },
+            ];
+          }
+
+          return [...acc, cur];
+        }, [] as RecordItem[]),
+      ),
     };
+
+    const diff = getDiff(updatedState);
+
+    return { ...updatedState, diff };
   };
 
 const moveRecord =
@@ -147,10 +170,7 @@ const deleteRecord =
 
     const diff = getDiff(updatedState);
 
-    return {
-      ...updatedState,
-      diff,
-    };
+    return { ...updatedState, diff };
   };
 
 const deleteAllUnpinnedRecord = (prevState: DataSchema) => {
@@ -162,15 +182,13 @@ const deleteAllUnpinnedRecord = (prevState: DataSchema) => {
 
   const diff = getDiff(updatedState);
 
-  return {
-    ...updatedState,
-    diff,
-  };
+  return { ...updatedState, diff };
 };
 
 export {
   addRecord,
   updateRecord,
+  excludeRecord,
   moveRecord,
   pinRecord,
   deleteRecord,

@@ -5,6 +5,7 @@ import {
   addRecord,
   deleteAllUnpinnedRecord,
   deleteRecord,
+  excludeRecord,
   getSum,
   moveRecord,
   pinRecord,
@@ -42,6 +43,16 @@ const SimpleBudget = () => {
 
   const [, setAmount] = amountHook;
   const [, setNote] = noteHook;
+
+  const onExcludeHandler = useCallback(
+    (rtype: ItemType, id: string, status: boolean) => {
+      setPersistedData((p) => {
+        return excludeRecord(rtype, id, status)(p);
+      });
+      setMenuVisibleId(undefined);
+    },
+    [setPersistedData],
+  );
 
   const onMoveHandler = useCallback(
     (rtype: ItemType, id: string, direction: "up" | "down") => {
@@ -141,6 +152,9 @@ const SimpleBudget = () => {
                     onPressDelete={() => {
                       onDeleteHandler("expense", ex.id, ex.note);
                     }}
+                    onExclude={() => {
+                      onExcludeHandler("expense", ex.id, !ex.isExcluded);
+                    }}
                   />
                 );
               })}
@@ -186,6 +200,9 @@ const SimpleBudget = () => {
                     }}
                     onPressDelete={() => {
                       onDeleteHandler("income", inc.id, inc.note);
+                    }}
+                    onExclude={() => {
+                      onExcludeHandler("income", inc.id, !inc.isExcluded);
                     }}
                   />
                 );
