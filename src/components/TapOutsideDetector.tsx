@@ -1,18 +1,18 @@
 import { ReactNode, useEffect, useRef } from "react";
 
-interface TabOutsideDetectorProps {
+interface TapOutsideDetectorProps {
   children: ReactNode;
   /** the id of the button or other element to trigger this area to popup */
   triggererId?: string;
   /** useCallback function or a function that is declared outside of the component */
-  onTabOutside?: () => void;
+  onTapOutside?: () => void;
 }
 
-const TabOutsideDetector = ({
+const TapOutsideDetector = ({
   children,
   triggererId,
-  onTabOutside,
-}: TabOutsideDetectorProps) => {
+  onTapOutside,
+}: TapOutsideDetectorProps) => {
   const areaRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLUnknownElement[]>([]);
 
@@ -31,7 +31,7 @@ const TabOutsideDetector = ({
         areaRef.current?.contains(e.target as Node);
 
       if (!doNothing) {
-        onTabOutside?.();
+        onTapOutside?.();
       }
     };
 
@@ -40,9 +40,9 @@ const TabOutsideDetector = ({
     return () => {
       window.removeEventListener("click", handler);
     };
-  }, [onTabOutside, triggererId]);
+  }, [onTapOutside, triggererId]);
 
   return <div ref={areaRef}>{children}</div>;
 };
 
-export default TabOutsideDetector;
+export default TapOutsideDetector;

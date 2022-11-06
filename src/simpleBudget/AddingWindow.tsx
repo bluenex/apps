@@ -11,7 +11,7 @@ import {
 import { FiX } from "react-icons/fi";
 import { twMerge } from "tailwind-merge";
 import Button from "../components/Button";
-import TabOutsideDetector from "../components/TabOutsideDetector";
+import TapOutsideDetector from "../components/TapOutsideDetector";
 import { ItemType, ItemTypeWithHidden } from "./types";
 
 const upperFirst = (x?: string) => x && `${x[0].toUpperCase()}${x.slice(1)}`;
@@ -55,7 +55,7 @@ const AddingWindow: FC<AddingWindowProps> = ({
     onClose();
   }, [onClose, setAmount, setNote]);
 
-  const handleTabOutside = useCallback(() => {
+  const handleTapOutside = useCallback(() => {
     handleCleanUpOnClose();
   }, [handleCleanUpOnClose]);
 
@@ -66,9 +66,9 @@ const AddingWindow: FC<AddingWindowProps> = ({
   }, [addingType]);
 
   return (
-    <TabOutsideDetector
+    <TapOutsideDetector
       triggererId="adding-window-triggerer"
-      onTabOutside={handleTabOutside}
+      onTapOutside={handleTapOutside}
     >
       <div
         className={twMerge(
@@ -156,7 +156,7 @@ const AddingWindow: FC<AddingWindowProps> = ({
           Save
         </Button>
       </div>
-    </TabOutsideDetector>
+    </TapOutsideDetector>
   );
 };
 

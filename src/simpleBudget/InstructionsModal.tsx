@@ -10,7 +10,7 @@ import {
 } from "react-icons/fi";
 import { TbPin, TbPinnedOff } from "react-icons/tb";
 import Button from "../components/Button";
-import TabOutsideDetector from "../components/TabOutsideDetector";
+import TapOutsideDetector from "../components/TapOutsideDetector";
 
 interface InstructionsModalProps {
   onClose: () => void;
@@ -19,9 +19,9 @@ interface InstructionsModalProps {
 const InstructionsModal: FC<InstructionsModalProps> = ({ onClose }) => {
   return (
     <div className="fixed top-0 left-0 grid h-screen w-screen place-content-center bg-black bg-opacity-50 p-2">
-      <TabOutsideDetector
+      <TapOutsideDetector
         triggererId="instructions-triggerer"
-        onTabOutside={onClose}
+        onTapOutside={onClose}
       >
         <div className="shadow-dark mb-24 grid max-w-sm gap-2 rounded bg-black p-4 pb-6">
           <div className="flex justify-end">
@@ -61,7 +61,7 @@ const InstructionsModal: FC<InstructionsModalProps> = ({ onClose }) => {
             Delete the record.
           </p>
         </div>
-      </TabOutsideDetector>
+      </TapOutsideDetector>
     </div>
   );
 };

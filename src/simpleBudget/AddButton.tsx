@@ -2,7 +2,7 @@ import { FC, useCallback, useState } from "react";
 import { FiPlus, FiMinus, FiTrash2 } from "react-icons/fi";
 import { twMerge } from "tailwind-merge";
 import Button from "../components/Button";
-import TabOutsideDetector from "../components/TabOutsideDetector";
+import TapOutsideDetector from "../components/TapOutsideDetector";
 import { ItemType } from "./types";
 
 interface AddButtonProps {
@@ -13,12 +13,12 @@ interface AddButtonProps {
 const AddButton: FC<AddButtonProps> = ({ onClickAdd, onClickClearAll }) => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
-  const handleTabOutside = useCallback(() => {
+  const handleTapOutside = useCallback(() => {
     setIsMenuVisible(false);
   }, []);
 
   return (
-    <TabOutsideDetector onTabOutside={handleTabOutside}>
+    <TapOutsideDetector onTapOutside={handleTapOutside}>
       <div
         id="adding-window-triggerer"
         className="fixed bottom-6 right-6 flex flex-col justify-end gap-4"
@@ -67,7 +67,7 @@ const AddButton: FC<AddButtonProps> = ({ onClickAdd, onClickClearAll }) => {
           </div>
         </div>
       </div>
-    </TabOutsideDetector>
+    </TapOutsideDetector>
   );
 };
 

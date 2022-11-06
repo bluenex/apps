@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import { twMerge } from "tailwind-merge";
-import TabOutsideDetector from "../components/TabOutsideDetector";
+import TapOutsideDetector from "../components/TapOutsideDetector";
 import { ItemType } from "./types";
 
 interface TotalRendererProps {
@@ -22,9 +22,9 @@ const TotalRenderer: FC<TotalRendererProps> = ({
     <div>
       <hr className="my-2" />
 
-      <TabOutsideDetector
+      <TapOutsideDetector
         triggererId="total-detail-triggerer"
-        onTabOutside={() => setIsDetailVisible(false)}
+        onTapOutside={() => setIsDetailVisible(false)}
       >
         <div
           className={twMerge(
@@ -63,7 +63,7 @@ const TotalRenderer: FC<TotalRendererProps> = ({
             </div>
           </div>
         </div>
-      </TabOutsideDetector>
+      </TapOutsideDetector>
 
       <div
         id="total-detail-triggerer"
