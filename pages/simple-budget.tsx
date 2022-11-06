@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
+import { FiInfo } from "react-icons/fi";
 import { useLocalStorage } from "usehooks-ts";
+import Button from "../src/components/Button";
 import Layout from "../src/components/Layout";
 import {
   addRecord,
@@ -14,6 +16,7 @@ import {
 import AddButton from "../src/simpleBudget/AddButton";
 import AddingWindow from "../src/simpleBudget/AddingWindow";
 import DiffRenderer from "../src/simpleBudget/DiffRenderer";
+import InstructionsModal from "../src/simpleBudget/InstructionsModal";
 import ItemRenderer from "../src/simpleBudget/ItemRenderer";
 import TotalRenderer from "../src/simpleBudget/TotalRenderer";
 import {
@@ -33,6 +36,7 @@ const SimpleBudget = () => {
     defaultData,
   );
 
+  const [instructionsVisible, setInstructionsVisible] = useState(false);
   const [data, setData] = useState<DataSchema>(defaultData);
   const [addingType, setAddingType] = useState<ItemTypeWithHidden>("hidden");
   const [menuVisibleId, setMenuVisibleId] = useState<string>();
@@ -118,7 +122,17 @@ const SimpleBudget = () => {
 
           {data.expense.length > 0 && (
             <div id="expense" className="mb-6">
-              <h2 className="mb-2 text-lg font-bold">Expense</h2>
+              <h2 className="mb-2 text-lg font-bold">
+                <span className="flex items-center gap-2">
+                  Expense
+                  <Button
+                    id="instructions-triggerer"
+                    onClick={() => setInstructionsVisible(true)}
+                  >
+                    <FiInfo />
+                  </Button>
+                </span>
+              </h2>
 
               {data.expense.map((ex, ind, arr) => {
                 const pinnedCount = arr.filter((x) => x.isPinned).length;
@@ -165,7 +179,17 @@ const SimpleBudget = () => {
 
           {data.income.length > 0 && (
             <div id="income" className="mb-6">
-              <h2 className="mb-2 text-lg font-bold">Income</h2>
+              <h2 className="mb-2 text-lg font-bold">
+                <span className="flex items-center gap-2">
+                  Income
+                  <Button
+                    id="instructions-triggerer"
+                    onClick={() => setInstructionsVisible(true)}
+                  >
+                    <FiInfo />
+                  </Button>
+                </span>
+              </h2>
 
               {data.income.map((inc, ind, arr) => {
                 const pinnedCount = arr.filter((x) => x.isPinned).length;
@@ -235,6 +259,10 @@ const SimpleBudget = () => {
           onClickClearAll={onDeleteAllUnpinnedHandler}
         />
       </section>
+
+      {instructionsVisible && (
+        <InstructionsModal onClose={() => setInstructionsVisible(false)} />
+      )}
     </Layout>
   );
 };

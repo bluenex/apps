@@ -16,10 +16,10 @@
 
 @layer utilities {
   .shadow-dark {
-    @apply shadow-lg shadow-gray-800;
+    @apply shadow-lg shadow-neutral-800;
   }
 
   .shadow-thin {
-    @apply shadow-lg shadow-gray-600;
+    @apply shadow-lg shadow-neutral-600;
   }
 }
