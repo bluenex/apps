@@ -173,7 +173,14 @@ const SimpleBudget = () => {
                 );
               })}
 
-              <TotalRenderer itemType="expense" amount={getSum(data.expense)} />
+              <TotalRenderer
+                itemType="expense"
+                amount={getSum(data.expense)}
+                pinnedAmount={getSum(data.expense.filter((x) => x.isPinned))}
+                notPinnedAmount={getSum(
+                  data.expense.filter((x) => !x.isPinned),
+                )}
+              />
             </div>
           )}
 
@@ -232,7 +239,12 @@ const SimpleBudget = () => {
                 );
               })}
 
-              <TotalRenderer itemType="income" amount={getSum(data.income)} />
+              <TotalRenderer
+                itemType="income"
+                amount={getSum(data.income)}
+                pinnedAmount={getSum(data.income.filter((x) => x.isPinned))}
+                notPinnedAmount={getSum(data.income.filter((x) => !x.isPinned))}
+              />
             </div>
           )}
         </section>
